@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -5,32 +6,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dizionario Personalizzato</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div id="container">
-        <h1>Dizionario Personalizzato</h1>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">📖 Dizionario Personalizzato</h1>
+            
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Cerca parole..." aria-label="Campo di ricerca">
+                <button class="search-button" aria-label="Cerca">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
 
-        <div id="navigation">
-            <!-- Icone per navigare tra Dizionario e Token -->
-            <button id="dizionarioBtn" class="navBtn">📚 Dizionario</button>
-            <button id="tokenBtn" class="navBtn">🔑 Token</button>
+            <nav class="navigation">
+                <button id="dizionarioBtn" class="nav-btn active" aria-current="page">
+                    <i class="fas fa-book"></i> Dizionario
+                </button>
+                <button id="tokenBtn" class="nav-btn">
+                    <i class="fas fa-plus-circle"></i> Aggiungi
+                </button>
+            </nav>
+        </header>
+
+        <div id="alert" class="alert hidden" role="alert">
+            <span class="alert-message"></span>
+            <button class="alert-close" aria-label="Chiudi">&times;</button>
         </div>
 
-        <!-- Sezione Dizionario (visualizza parole in ordine alfabetico) -->
-        <div id="dizionario" class="section">
-            <h2>Lista delle Parole (Ordine Alfabetico)</h2>
-            <ul id="words"></ul>
-        </div>
+        <main>
+            <section id="dizionario" class="section active">
+                <div class="section-header">
+                    <h2>Lista delle Parole</h2>
+                    <div class="sort-controls">
+                        <button id="sortAlpha" class="sort-btn active" data-sort="alpha">
+                            <i class="fas fa-sort-alpha-down"></i> A-Z
+                        </button>
+                        <button id="sortDate" class="sort-btn" data-sort="date">
+                            <i class="fas fa-clock"></i> Data
+                        </button>
+                    </div>
+                </div>
+                <ul id="words" class="words-list"></ul>
+                <p class="empty-state" id="emptyState">Nessuna parola trovata. Inizia aggiungendo una nuova voce!</p>
+            </section>
 
-        <!-- Sezione Token (aggiungi, modifica o elimina parole) -->
-        <div id="token" class="section" style="display: none;">
-            <h2>Gestisci Parola</h2>
-            <input type="text" id="wordInput" placeholder="Parola" required>
-            <textarea id="descInput" placeholder="Descrizione" required></textarea>
-            <button id="saveWordBtn">Salva</button>
-            <button id="updateWordBtn" style="display: none;">Aggiorna</button>
-            <button id="deleteWordBtn" style="display: none;">Elimina</button>
-        </div>
+            <section id="token" class="section">
+                <form id="wordForm" class="word-form">
+                    <h2 id="formTitle">Aggiungi Nuova Parola</h2>
+                    
+                    <div class="form-group">
+                        <label for="wordInput">Parola:</label>
+                        <input type="text" id="wordInput" class="form-input" 
+                               placeholder="Inserisci la parola" required 
+                               maxlength="50" aria-describedby="wordHelp">
+                        <small id="wordHelp" class="form-help">Massimo 50 caratteri</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descInput">Descrizione:</label>
+                        <textarea id="descInput" class="form-input" 
+                                  placeholder="Inserisci la descrizione" required 
+                                  rows="4" maxlength="200" aria-describedby="descHelp"></textarea>
+                        <small id="descHelp" class="form-help">Massimo 200 caratteri</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="cancelBtn" class="btn secondary">
+                            <i class="fas fa-times"></i> Annulla
+                        </button>
+                        <div class="action-buttons">
+                            <button type="submit" id="saveWordBtn" class="btn primary">
+                                <i class="fas fa-save"></i> Salva
+                            </button>
+                            <button type="button" id="updateWordBtn" class="btn warning hidden">
+                                <i class="fas fa-check"></i> Aggiorna
+                            </button>
+                            <button type="button" id="deleteWordBtn" class="btn danger hidden">
+                                <i class="fas fa-trash"></i> Elimina
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </main>
     </div>
 
     <script src="script.js"></script>
