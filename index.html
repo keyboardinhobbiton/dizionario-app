@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dizionario Personalizzato</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="container">
+        <h1>Dizionario Personalizzato</h1>
+
+        <div id="navigation">
+            <!-- Icone per navigare tra Dizionario e Token -->
+            <button id="dizionarioBtn" class="navBtn">📚 Dizionario</button>
+            <button id="tokenBtn" class="navBtn">🔑 Token</button>
+        </div>
+
+        <!-- Sezione Dizionario (visualizza parole in ordine alfabetico) -->
+        <div id="dizionario" class="section">
+            <h2>Lista delle Parole (Ordine Alfabetico)</h2>
+            <ul id="words"></ul>
+        </div>
+
+        <!-- Sezione Token (aggiungi, modifica o elimina parole) -->
+        <div id="token" class="section" style="display: none;">
+            <h2>Gestisci Parola</h2>
+            <input type="text" id="wordInput" placeholder="Parola" required>
+            <textarea id="descInput" placeholder="Descrizione" required></textarea>
+            <button id="saveWordBtn">Salva</button>
+            <button id="updateWordBtn" style="display: none;">Aggiorna</button>
+            <button id="deleteWordBtn" style="display: none;">Elimina</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
