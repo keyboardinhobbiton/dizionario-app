@@ -1,81 +1,82 @@
-let wordsList = JSON.parse(localStorage.getItem('words')) || [];
-let currentWordIndex = null; // Per sapere quale parola stiamo modificando
-
-// Gestisce la visualizzazione della sezione Dizionario
-document.getElementById('dizionarioBtn').addEventListener('click', function() {
-    document.getElementById('dizionario').style.display = 'block';
-    document.getElementById('token').style.display = 'none';
-    loadWords();  // Ricarica le parole quando si accede alla sezione Dizionario
-});
-
-// Gestisce la visualizzazione della sezione Token (Aggiungi, Modifica, Elimina)
-document.getElementById('tokenBtn').addEventListener('click', function() {
-    document.getElementById('token').style.display = 'block';
-    document.getElementById('dizionario').style.display = 'none';
-    clearForm();  // Pulisce il modulo per aggiungere una nuova parola
-});
-
-// Carica e visualizza le parole in ordine alfabetico
-function loadWords() {
-    const wordList = document.getElementById('words');
-    wordList.innerHTML = '';
-    wordsList.sort((a, b) => a.word.localeCompare(b.word));  // Ordina alfabeticamente
-    wordsList.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${item.word}</strong>: ${item.description} <button onclick="editWord(${index})">Modifica</button> <button onclick="deleteWord(${index})">Elimina</button>`;
-        wordList.appendChild(li);
-    });
-}
-
-// Aggiungi o modifica una parola
-document.getElementById('saveWordBtn').addEventListener('click', function() {
-    const word = document.getElementById('wordInput').value;
-    const description = document.getElementById('descInput').value;
-    
-    if (word && description) {
-        if (currentWordIndex !== null) {
-            // Se stiamo modificando una parola
-            wordsList[currentWordIndex] = { word, description };
-            document.getElementById('saveWordBtn').style.display = 'inline';
-            document.getElementById('updateWordBtn').style.display = 'none';
-            currentWordIndex = null;
-        } else {
-            // Se stiamo aggiungendo una nuova parola
-            wordsList.push({ word, description });
-        }
-
-        localStorage.setItem('words', JSON.stringify(wordsList));
-        loadWords(); // Ricarica le parole dopo aver aggiunto o modificato
-        clearForm();  // Pulisce il modulo
+// script.js
+class Dictionary {
+    constructor() {
+        this.words = JSON.parse(localStorage.getItem('words')) || [];
+        this.currentSort = 'alpha';
+        this.currentWordIndex = null;
+        this.init();
     }
-});
 
-// Modifica una parola
-function editWord(index) {
-    const word = wordsList[index];
-    document.getElementById('wordInput').value = word.word;
-    document.getElementById('descInput').value = word.description;
-    currentWordIndex = index;
-    document.getElementById('saveWordBtn').style.display = 'none';
-    document.getElementById('updateWordBtn').style.display = 'inline';
-    document.getElementById('deleteWordBtn').style.display = 'inline';
+    init() {
+        this.setupEventListeners();
+        this.loadWords();
+        this.setupSorting();
+        this.setupSearch();
+    }
+
+    setupEventListeners() {
+        document.getElementById('dizionarioBtn').addEventListener('click', () => this.showSection('dizionario'));
+        document.getElementById('tokenBtn').addEventListener('click', () => this.showSection('token'));
+        document.getElementById('wordForm').addEventListener('submit', (e) => this.handleSubmit(e));
+        document.getElementById('cancelBtn').addEventListener('click', () => this.cancelEdit());
+        document.querySelector('.alert-close').addEventListener('click', () => this.hideAlert());
+    }
+
+    showAlert(message, type = 'success') {
+        const alert = document.getElementById('alert');
+        alert.className = `alert ${type}`;
+        alert.querySelector('.alert-message').textContent = message;
+        alert.classList.remove('hidden');
+        setTimeout(() => this.hideAlert(), 3000);
+    }
+
+    hideAlert() {
+        document.getElementById('alert').classList.add('hidden');
+    }
+
+    loadWords() {
+        const wordsList = document.getElementById('words');
+        const emptyState = document.getElementById('emptyState');
+        wordsList.innerHTML = '';
+
+        if (this.words.length === 0) {
+            emptyState.classList.remove('hidden');
+            return;
+        }
+        emptyState.classList.add('hidden');
+
+        this.sortWords();
+        
+        this.words.forEach((word, index) => {
+            const li = this.createWordElement(word, index);
+            wordsList.appendChild(li);
+        });
+    }
+
+    createWordElement(word, index) {
+        const li = document.createElement('li');
+        li.className = 'word-item';
+        li.innerHTML = `
+            <div class="word-content">
+                <h3 class="word-title">${word.word}</h3>
+                <p class="word-description">${word.description}</p>
+                <div class="word-meta">
+                    <time>${new Date(word.date).toLocaleDateString()}</time>
+                </div>
+            </div>
+            <div class="word-actions">
+                <button class="btn icon" onclick="dict.editWord(${index})" aria-label="Modifica">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn icon danger" onclick="dict.deleteWord(${index})" aria-label="Elimina">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        return li;
+    }
+
+    // Metodi rimanenti per gestire ordinamento, ricerca, CRUD...
 }
 
-// Elimina una parola
-function deleteWord(index) {
-    wordsList.splice(index, 1);
-    localStorage.setItem('words', JSON.stringify(wordsList));
-    loadWords(); // Ricarica le parole dopo la rimozione
-}
-
-// Pulisce il modulo di inserimento
-function clearForm() {
-    document.getElementById('wordInput').value = '';
-    document.getElementById('descInput').value = '';
-    document.getElementById('saveWordBtn').style.display = 'inline';
-    document.getElementById('updateWordBtn').style.display = 'none';
-    document.getElementById('deleteWordBtn').style.display = 'none';
-}
-
-// Carica la lista quando la pagina è pronta
-document.addEventListener('DOMContentLoaded', loadWords);
+const dict = new Dictionary();
