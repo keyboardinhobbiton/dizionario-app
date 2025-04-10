@@ -1,165 +1,269 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modulo di Contatto</title>
-    <style>
-        :root {
-            --main-bg: #000;
-            --accent-color: #FFE81F;
-            --text-color: #fff;
-            --dark-accent: #333;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        
-        body {
-            background-color: var(--main-bg);
-            color: var(--text-color);
-            padding: 20px;
-        }
-        
-        .commission-form {
-            background: rgba(51, 51, 51, 0.7);
-            padding: 40px;
-            border-radius: 10px;
-            border: 1px solid var(--dark-accent);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .commission-form h2 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            color: var(--accent-color);
-            text-align: center;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-            color: var(--accent-color);
-        }
-        
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--dark-accent);
-            border-radius: 5px;
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-        
-        .form-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .submit-button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: var(--accent-color);
-            color: var(--main-bg);
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .submit-button:hover {
-            background-color: #ffd700;
-        }
-        
-        .success-message {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-            text-align: center;
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modulo di Contatto</title>
+  <style>
+    :root {
+      --main-bg: #000;
+      --accent-color: #FFE81F;
+      --text-color: #fff;
+      --dark-accent: #333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--main-bg);
+      color: var(--text-color);
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .box {
+      background: rgba(51, 51, 51, 0.7);
+      padding: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--dark-accent);
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: var(--accent-color);
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+      color: var(--accent-color);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--dark-accent);
+      border-radius: 5px;
+      color: var(--text-color);
+      font-size: 1rem;
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background-color: var(--accent-color);
+      color: var(--main-bg);
+      border: none;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .button:hover {
+      background-color: #ffd700;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 15px 25px;
+      background: rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      border-radius: 5px 5px 0 0;
+      margin-right: 5px;
+    }
+
+    .tab.active {
+      background: rgba(255, 232, 31, 0.2);
+      color: var(--accent-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    #confirmation {
+      display: none;
+      background: rgba(51, 51, 51, 0.7);
+      padding: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--dark-accent);
+      text-align: center;
+    }
+
+    #confirmation h2 {
+      color: #4CAF50;
+    }
+  </style>
 </head>
 <body>
-    <section class="commission-form">
-        <h2>Commissiona il Tuo Audiolibro</h2>
-        <!-- Form con autorisponditore configurato -->
-        <form action="https://formsubmit.co/dna67222@gmail.com" method="POST">
-            <!-- Campi nascosti per configurare FormSubmit -->
-            <input type="hidden" name="_subject" value="Nuova Richiesta di Audiolibro">
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_next" value="https://formsubmit.co/confirm">
-            
-            <!-- Configurazione dell'autorisponditore -->
-            <input type="hidden" name="_autoresponse" value="Grazie per la tua richiesta di audiolibro personalizzato! Abbiamo ricevuto la tua commissione e la stiamo valutando. Ti contatteremo al più presto con una proposta personalizzata. AudioSaga - Audiolibri Personalizzati">
-            <input type="hidden" name="_template" value="table">
-            
-            <div class="form-group">
-                <label for="name">Nome:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">La tua Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="book-title">Titolo del Libro/Storia:</label>
-                <input type="text" id="book-title" name="book-title" required>
-            </div>
-            <div class="form-group">
-                <label for="author">Autore (se applicabile):</label>
-                <input type="text" id="author" name="author">
-            </div>
-            <div class="form-group">
-                <label for="genre">Genere:</label>
-                <select id="genre" name="genre" required>
-                    <option value="">Seleziona un genere</option>
-                    <option value="fantasy">Fantasy</option>
-                    <option value="scifi">Fantascienza</option>
-                    <option value="adventure">Avventura</option>
-                    <option value="romance">Romantico</option>
-                    <option value="mystery">Mistero</option>
-                    <option value="horror">Horror</option>
-                    <option value="other">Altro</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="voice-style">Stile di Voce Preferito:</label>
-                <select id="voice-style" name="voice-style">
-                    <option value="">Seleziona uno stile</option>
-                    <option value="dramatic">Drammatico</option>
-                    <option value="neutral">Neutrale</option>
-                    <option value="epic">Epico</option>
-                    <option value="intimate">Intimo</option>
-                    <option value="multiple">Voci Multiple</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="special-requests">Dettagli Aggiuntivi e Richieste Speciali:</label>
-                <textarea id="special-requests" name="special-requests"></textarea>
-            </div>
-            <button type="submit" class="submit-button">Invia Commissione</button>
-        </form>
+  <div class="container">
+    <!-- FORM -->
+    <section id="form-section" class="box">
+      <h2>Commissiona il Tuo Audiolibro</h2>
+      <form id="commission-form" action="https://formsubmit.co/dna67222@gmail.com" method="POST">
+        <!-- Hidden Config -->
+        <input type="hidden" name="_subject" value="Nuova Richiesta di Audiolibro">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" id="_next-field">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_autoresponse" value="Grazie per la tua richiesta di audiolibro personalizzato!">
+
+        <div class="form-group">
+          <label for="name">Nome:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">La tua Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="book-title">Titolo del Libro/Storia:</label>
+          <input type="text" id="book-title" name="book-title" required>
+        </div>
+        <div class="form-group">
+          <label for="author">Autore (se applicabile):</label>
+          <input type="text" id="author" name="author">
+        </div>
+        <div class="form-group">
+          <label for="genre">Genere:</label>
+          <select id="genre" name="genre" required>
+            <option value="">Seleziona un genere</option>
+            <option value="fantasy">Fantasy</option>
+            <option value="scifi">Fantascienza</option>
+            <option value="adventure">Avventura</option>
+            <option value="romance">Romantico</option>
+            <option value="mystery">Mistero</option>
+            <option value="horror">Horror</option>
+            <option value="other">Altro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="voice-style">Stile di Voce:</label>
+          <select id="voice-style" name="voice-style">
+            <option value="">Seleziona uno stile</option>
+            <option value="dramatic">Drammatico</option>
+            <option value="neutral">Neutrale</option>
+            <option value="epic">Epico</option>
+            <option value="intimate">Intimo</option>
+            <option value="multiple">Voci Multiple</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="special-requests">Dettagli Aggiuntivi:</label>
+          <textarea id="special-requests" name="special-requests"></textarea>
+        </div>
+        <button type="submit" class="button">Invia Commissione</button>
+      </form>
     </section>
+
+    <!-- CONFIRMATION -->
+    <section id="confirmation">
+      <h2>Grazie per la tua richiesta!</h2>
+      <p>Abbiamo ricevuto la tua commissione. Ti contatteremo presto con una proposta personalizzata.</p>
+      <button id="go-to-payment" class="button">Vai alla sezione pagamenti</button>
+    </section>
+
+    <!-- PAYMENT -->
+    <section id="payment" class="box">
+      <h2>Pagamento</h2>
+      <p>Dopo aver ricevuto la nostra proposta e confermato il preventivo, scegli un metodo di pagamento:</p>
+      <div class="tabs">
+        <div class="tab active" data-tab="paypal">PayPal</div>
+        <div class="tab" data-tab="bank">Bonifico</div>
+        <div class="tab" data-tab="card">Carta</div>
+      </div>
+
+      <div id="paypal" class="tab-content active">
+        <label>Importo (€):</label>
+        <input type="number" min="1" step="0.01">
+        <p><strong>Verrai reindirizzato al sito sicuro di PayPal per completare il pagamento.</strong></p>
+        <button class="button">Paga con PayPal</button>
+      </div>
+
+      <div id="bank" class="tab-content">
+        <p><strong>IBAN:</strong> IT12A0123456789000000123456</p>
+        <p><strong>BIC:</strong> ABCDIT12345</p>
+        <p><strong>Causale:</strong> Inserisci il numero del preventivo</p>
+      </div>
+
+      <div id="card" class="tab-content">
+        <label>Intestatario Carta:</label>
+        <input type="text">
+        <label>Numero:</label>
+        <input type="text" placeholder="1234 5678 9012 3456">
+        <label>Scadenza:</label>
+        <input type="text" placeholder="MM/AA">
+        <label>CVV:</label>
+        <input type="text" placeholder="123">
+        <label>Importo (€):</label>
+        <input type="number" min="1" step="0.01">
+        <button class="button">Procedi al Pagamento</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Imposta URL di redirect dinamico nel form
+    document.getElementById('_next-field').value = window.location.href.split('#')[0] + "?submitted=true";
+
+    // Visualizza conferma se redirect ha ?submitted=true
+    if (window.location.search.includes("submitted=true")) {
+      document.getElementById("form-section").style.display = "none";
+      document.getElementById("confirmation").style.display = "block";
+    }
+
+    // Passaggio a pagamento
+    document.getElementById("go-to-payment").addEventListener("click", () => {
+      document.getElementById("confirmation").style.display = "none";
+      document.getElementById("payment").scrollIntoView({ behavior: "smooth" });
+    });
+
+    // Gestione schede pagamento
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>
