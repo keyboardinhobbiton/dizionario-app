@@ -103,12 +103,16 @@
 <body>
     <section class="commission-form">
         <h2>Commissiona il Tuo Audiolibro</h2>
-        <!-- IMPORTANTE: Il form invia automaticamente all'indirizzo dna67222@gmail.com -->
+        <!-- Form con autorisponditore configurato -->
         <form action="https://formsubmit.co/dna67222@gmail.com" method="POST">
             <!-- Campi nascosti per configurare FormSubmit -->
             <input type="hidden" name="_subject" value="Nuova Richiesta di Audiolibro">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_next" value="https://formsubmit.co/confirm">
+            
+            <!-- Configurazione dell'autorisponditore -->
+            <input type="hidden" name="_autoresponse" value="Grazie per la tua richiesta di audiolibro personalizzato! Abbiamo ricevuto la tua commissione e la stiamo valutando. Ti contatteremo al più presto con una proposta personalizzata. AudioSaga - Audiolibri Personalizzati">
+            <input type="hidden" name="_template" value="table">
             
             <div class="form-group">
                 <label for="name">Nome:</label>
@@ -156,9 +160,6 @@
             </div>
             <button type="submit" class="submit-button">Invia Commissione</button>
         </form>
-        <div class="success-message" id="success-message">
-            Grazie per la tua richiesta! Ti contatteremo presto.
-        </div>
     </section>
 </body>
 </html>
