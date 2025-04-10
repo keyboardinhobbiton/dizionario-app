@@ -3,252 +3,867 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archivio Imperiale Galattico</title>
+    <title>AudioSaga | Audiolibri Personalizzati</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/emailjs-com/3.2.0/email.min.js"></script>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #000;
-            color: #ffe81f;
-            margin: 0;
-            padding: 20px;
-            background-image: url('/api/placeholder/800/600');
-            background-size: cover;
-            background-attachment: fixed;
+        :root {
+            --main-bg: #000;
+            --accent-color: #FFE81F;
+            --text-color: #fff;
+            --dark-accent: #333;
+            --star-color: rgba(255, 255, 255, 0.8);
+            --blue-glow: #31A7F1;
         }
-        .container {
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        /* Star background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: var(--star-color);
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+        
+        header {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.7));
+            padding: 20px;
+            border-bottom: 2px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(255, 232, 31, 0.7);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-shadow: 0 0 15px rgba(255, 232, 31, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: var(--accent-color);
+            color: var(--main-bg);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        
+        .feature-card {
+            background: rgba(51, 51, 51, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--dark-accent);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(255, 232, 31, 0.2);
+            border-color: var(--accent-color);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+        
+        .feature-card p {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .process {
+            margin-bottom: 80px;
+            text-align: center;
+        }
+        
+        .process h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(255, 232, 31, 0.3);
+        }
+        
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 60px;
+        }
+        
+        .process-steps::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background-color: var(--accent-color);
+            z-index: 1;
+        }
+        
+        .step {
+            position: relative;
+            z-index: 2;
+            width: 25%;
+            padding: 0 20px;
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color);
+            color: var(--main-bg);
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+        }
+        
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+        
+        .step p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .commission-form {
+            background: rgba(51, 51, 51, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--dark-accent);
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
-            border: 1px solid #444;
-            border-radius: 10px;
         }
-        h1 {
-            text-align: center;
-            color: #ffe81f;
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        
+        .commission-form h2 {
+            font-size: 2.5rem;
             margin-bottom: 30px;
+            color: var(--accent-color);
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 232, 31, 0.3);
         }
-        .control-panel {
-            background-color: #111;
-            padding: 20px;
-            border-radius: 5px;
+        
+        .form-group {
             margin-bottom: 20px;
-            border: 1px solid #333;
         }
-        .word-input {
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
             width: 100%;
-            background-color: #222;
-            color: #4bd5ee;
-            border: 1px solid #444;
+            padding: 12px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--dark-accent);
             border-radius: 5px;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 15px;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(255, 232, 31, 0.3);
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
             resize: vertical;
         }
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-        button {
-            background-color: #444;
-            color: #ffe81f;
+        
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent-color);
+            color: var(--main-bg);
             border: none;
             border-radius: 5px;
-            padding: 10px 15px;
-            cursor: pointer;
-            text-transform: uppercase;
+            font-size: 1.2rem;
             font-weight: bold;
+            cursor: pointer;
             transition: all 0.3s;
-            flex: 1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        button:hover {
-            background-color: #666;
-            box-shadow: 0 0 10px #ffe81f;
+        
+        .submit-button:hover {
+            background-color: #ffd700;
+            box-shadow: 0 0 20px var(--accent-color);
         }
-        .word-grid {
+        
+        .lightsaber {
+            height: 4px;
+            background-color: var(--blue-glow);
+            box-shadow: 0 0 10px var(--blue-glow);
+            margin: 80px 0;
+            position: relative;
+        }
+        
+        .lightsaber::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            background-color: var(--blue-glow);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--blue-glow);
+        }
+        
+        .testimonials {
+            margin-bottom: 80px;
+        }
+        
+        .testimonials h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--accent-color);
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 232, 31, 0.3);
+        }
+        
+        .testimonial-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial {
+            background: rgba(51, 51, 51, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--dark-accent);
+        }
+        
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 20px;
+            position: relative;
+            padding: 0 20px;
+        }
+        
+        .testimonial-content::before,
+        .testimonial-content::after {
+            content: '"';
+            font-size: 2rem;
+            color: var(--accent-color);
+            position: absolute;
+        }
+        
+        .testimonial-content::before {
+            left: 0;
+            top: -10px;
+        }
+        
+        .testimonial-content::after {
+            right: 0;
+            bottom: -20px;
+        }
+        
+        .testimonial-author {
+            text-align: right;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        footer {
+            background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.7));
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 2px solid var(--accent-color);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .footer-section {
+            width: 30%;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
             gap: 15px;
             margin-top: 20px;
         }
-        .word-card {
-            background-color: #222;
-            border: 1px solid #444;
-            border-radius: 5px;
-            padding: 15px;
-            text-align: center;
-            position: relative;
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--dark-accent);
+            color: var(--text-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             transition: all 0.3s;
+            text-decoration: none;
         }
-        .word-card:hover {
+        
+        .social-icon:hover {
+            background-color: var(--accent-color);
+            color: var(--main-bg);
             transform: translateY(-5px);
-            box-shadow: 0 0 15px rgba(75, 213, 238, 0.5);
         }
-        .highlighted {
-            color: #ff5a5a;
+        
+        .copyright {
+            margin-top: 40px;
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color);
+            color: var(--main-bg);
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: top 0.5s ease;
+            z-index: 1000;
+            text-align: center;
             font-weight: bold;
         }
-        .status-indicator {
+        
+        .notification.show {
+            top: 20px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 20px;
             height: 20px;
-            text-align: center;
-            color: #4bd5ee;
-            font-style: italic;
-            margin-top: 10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--main-bg);
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
         }
-        .blinking {
-            animation: blink 1.5s infinite;
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .features, .process-steps, .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .process-steps::before {
+                display: none;
+            }
+            
+            .step {
+                width: 100%;
+                margin-bottom: 40px;
+            }
+            
+            .footer-section {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Archivio Imperiale Galattico: Database Parole con Aurek</h1>
-        
-        <div class="control-panel">
-            <textarea id="wordInput" class="word-input" rows="10" placeholder="Inserisci termini galattici, uno per riga..."></textarea>
-            <div class="button-group">
-                <button onclick="scanWords()">Scansiona Database</button>
-                <button onclick="resetTerminals()">Purga Terminali</button>
+    <!-- Stars Background -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Notification Element -->
+    <div class="notification" id="notification">Messaggio</div>
+    
+    <header>
+        <nav>
+            <div class="logo">
+                <span class="logo-icon">🎧✨</span> AudioSaga
             </div>
-            <div id="statusIndicator" class="status-indicator"></div>
-        </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#servizi">Servizi</a></li>
+                <li><a href="#processo">Processo</a></li>
+                <li><a href="#commissiona">Commissiona</a></li>
+                <li><a href="#testimonianze">Testimonianze</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="hero" id="home">
+            <h1>Audiolibri Personalizzati da Altri Mondi</h1>
+            <p>Viaggia verso galassie lontane, regni magici e mondi fantastici attraverso la voce. Commissiona audiolibri unici e personalizzati creati specificamente per te.</p>
+            <a href="#commissiona" class="cta-button">Commissiona il Tuo Audiolibro</a>
+        </section>
         
-        <div class="word-grid" id="wordGrid">
-            <!-- I termini galattici verranno visualizzati qui -->
+        <section class="features" id="servizi">
+            <div class="feature-card">
+                <div class="feature-icon">🎭</div>
+                <h3>Voci Immersive</h3>
+                <p>Diversi stili vocali e di recitazione per dare vita ad ogni personaggio della tua storia preferita.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎵</div>
+                <h3>Effetti Sonori & Musica</h3>
+                <p>Ambientazione sonora completa che ti trasporterà direttamente nel mondo della storia.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Storie Personalizzate</h3>
+                <p>Da romanzi pubblicati alle tue creazioni originali, adattiamo qualsiasi testo in formato audio.</p>
+            </div>
+        </section>
+        
+        <div class="lightsaber"></div>
+        
+        <section class="process" id="processo">
+            <h2>Come Creiamo il Tuo Audiolibro</h2>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Richiesta</h3>
+                    <p>Invia la tua commissione dettagliando il libro o la storia che desideri trasformare in audiolibro.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Proposta</h3>
+                    <p>Ti invieremo un preventivo e opzioni vocali per il tuo progetto.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Produzione</h3>
+                    <p>Registriamo, montiamo e aggiungiamo effetti sonori al tuo audiolibro.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Consegna</h3>
+                    <p>Ricevi il tuo audiolibro completato e immergiti in una nuova dimensione sonora.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="commission-form" id="commissiona">
+            <h2>Commissiona il Tuo Audiolibro</h2>
+            <form id="audiobook-form">
+                <div class="form-group">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="book-title">Titolo del Libro/Storia:</label>
+                    <input type="text" id="book-title" name="book-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">Autore (se applicabile):</label>
+                    <input type="text" id="author" name="author">
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genere:</label>
+                    <select id="genre" name="genre" required>
+                        <option value="">Seleziona un genere</option>
+                        <option value="fantasy">Fantasy</option>
+                        <option value="scifi">Fantascienza</option>
+                        <option value="adventure">Avventura</option>
+                        <option value="romance">Romantico</option>
+                        <option value="mystery">Mistero</option>
+                        <option value="horror">Horror</option>
+                        <option value="other">Altro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="voice-style">Stile di Voce Preferito:</label>
+                    <select id="voice-style" name="voice-style">
+                        <option value="">Seleziona uno stile</option>
+                        <option value="dramatic">Drammatico</option>
+                        <option value="neutral">Neutrale</option>
+                        <option value="epic">Epico</option>
+                        <option value="intimate">Intimo</option>
+                        <option value="multiple">Voci Multiple</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="special-requests">Dettagli Aggiuntivi e Richieste Speciali:</label>
+                    <textarea id="special-requests" name="special-requests"></textarea>
+                </div>
+                <button type="submit" class="submit-button">
+                    Invia Commissione
+                    <span class="loading-spinner" id="loading-spinner"></span>
+                </button>
+            </form>
+        </section>
+        
+        <div class="lightsaber"></div>
+        
+        <section class="testimonials" id="testimonianze">
+            <h2>Cosa Dicono i Nostri Clienti</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        Il mio romanzo fantasy preferito ha preso vita come mai prima d'ora. Le diverse voci per ogni personaggio mi hanno fatto sentire come se fossi dentro la storia.
+                    </div>
+                    <div class="testimonial-author">- Alessandro R.</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        La qualità della produzione ha superato tutte le mie aspettative. Gli effetti sonori e la musica di sottofondo hanno creato un'esperienza completamente immersiva.
+                    </div>
+                    <div class="testimonial-author">- Maria L.</div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        Ho commissionato un audiolibro della mia storia originale per mio figlio e ora lo ascolta ogni sera prima di dormire. Un tesoro di famiglia che durerà generazioni.
+                    </div>
+                    <div class="testimonial-author">- Carlo G.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>AudioSaga</h3>
+                <p>Trasformiamo storie in esperienze sonore immersive da una galassia molto, molto vicina.</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">f</a>
+                    <a href="#" class="social-icon">t</a>
+                    <a href="#" class="social-icon">in</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Link Rapidi</h3>
+                <ul class="footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#servizi">Servizi</a></li>
+                    <li><a href="#processo">Processo</a></li>
+                    <li><a href="#commissiona">Commissiona</a></li>
+                    <li><a href="#testimonianze">Testimonianze</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contatti</h3>
+                <ul class="footer-links">
+                    <li>Email: info@audiosaga.com</li>
+                    <li>Telefono: +39 123 456 7890</li>
+                    <li>Orari: Lun-Ven, 9:00-18:00</li>
+                </ul>
+            </div>
         </div>
-    </div>
-
+        <div class="copyright">
+            &copy; 2025 AudioSaga. Tutti i diritti riservati.
+        </div>
+    </footer>
+    
     <script>
-        // Database predefinito con termini galattici contenenti Aurek (A)
-        const imperialDatabase = [
-            "Correzione di mutazioni monogeniche (ad esempio, fibrosi cistica, distrofia muscolare di Duchenne)",
-            "Terapia genica per malattie legate al cromosoma X",
-            "Ripristino di geni difettosi (mutazioni nei geni BRCA per il cancro)",
-            "Modifica di geni coinvolti nella regolazione del ciclo cellulare (p53, BRCA1/2)",
-            "Inibizione dell'espressione di oncogeni",
-            "Trattamento dell'obesità tramite la modifica di geni che influenzano il metabolismo dei grassi",
-            "Correzione della glicemia (per diabete di tipo 1 e 2)",
-            "Potenziamento della risposta immunitaria contro infezioni e tumori",
-            "Inibizione di risposte immunitarie anomale (es. autoimmunità)",
-            "Attivazione di geni che stimolano la rigenerazione cellulare (ad esempio, attraverso l'uso di fattori di crescita)",
-            "Correzione di difetti nel DNA delle cellule staminali",
-            "Modifica dei geni legati alla senescenza cellulare (p16, telomerasi)",
-            "Prevenzione della morte cellulare prematura",
-            "Potenziamento dei meccanismi di riparazione del DNA (recupero da danni indotti da radiazioni, inquinamento, o errore replicativo)",
-            "Stimolazione dei processi di autofagia per rimuovere rifiuti cellulari e prevenire malattie degenerative",
-            "Modifica di geni che regolano la plasticità sinaptica e la memoria a lungo termine",
-            "Stimolazione dell'espressione del gene BDNF (Brain-Derived Neurotrophic Factor)",
-            "Potenziamento dei percorsi neuronali responsabili dell'apprendimento e della cognizione",
-            "Modifica di geni per prevenire malattie come Alzheimer, Parkinson, e Huntington",
-            "Modifica di geni che influenzano la sintesi proteica (es. mTOR, Myostatin)",
-            "Potenziamento delle capacità aerobiche tramite la manipolazione dei geni per la produzione di ossigeno (EPAS1)",
-            "Stimolazione della riparazione muscolare rapida tramite l'editing di geni coinvolti nel recupero (es. FGF21)",
-            "Modifica dei percorsi metabolici per massimizzare la produzione di energia (ad esempio, aumentando l'efficienza mitocondriale)",
-            "Modifica dei geni per resistere a climi estremi (freddo, calore, altitudine)",
-            "Potenziamento dei recettori immunitari per la protezione contro virus e batteri",
-            "Modifica del microbioma intestinale e dei geni coinvolti nella digestione",
-            "Attivazione di geni coinvolti nella protezione contro i danni UV (es. geni legati alla melanina)",
-            "Correzione di disfunzioni genetiche legate alla schizofrenia, depressione, ansia, ecc.",
-            "Modifica dei neurotrasmettitori coinvolti nelle malattie mentali (serotonina, dopamina)",
-            "Manipolazione dei geni legati all'empatia, all'aggressività e alla cooperazione sociale (es. OXTR)"
-        ];
-
-        // Funzione per visualizzare i termini
-        function scanWords() {
-            updateStatus("Scansione database in corso...");
+        // Create stars
+        function createStars() {
+            const stars = document.getElementById('stars');
+            const numberOfStars = 200;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random position
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // Random size
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // Random twinkle animation delay
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                stars.appendChild(star);
+            }
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS user ID
+        })();
+        
+        // Show notification function
+        function showNotification(message, isSuccess = true) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.backgroundColor = isSuccess ? '#FFE81F' : '#ff3333';
+            notification.classList.add('show');
             
             setTimeout(() => {
-                const wordGrid = document.getElementById('wordGrid');
-                wordGrid.innerHTML = '';
-                
-                let words = [];
-                const inputText = document.getElementById('wordInput').value.trim();
-                
-                if (inputText === '') {
-                    // Se non è stato inserito nulla, usa il database imperiale
-                    words = imperialDatabase;
-                    updateStatus("Visualizzando database imperiale predefinito");
-                } else {
-                    // Altrimenti usa i termini inseriti
-                    words = inputText.split('\n').filter(word => word.trim() !== '');
-                    updateStatus(`Visualizzando ${words.length} termini galattici personalizzati`);
-                }
-                
-                // Simula un ritardo di caricamento per effetto sci-fi
-                let i = 0;
-                const interval = setInterval(() => {
-                    if (i >= words.length) {
-                        clearInterval(interval);
-                        updateStatus("Scansione completata");
-                        return;
-                    }
-                    
-                    addWordCard(words[i]);
-                    i++;
-                }, 150);
-            }, 800);
+                notification.classList.remove('show');
+            }, 5000);
         }
         
-        function addWordCard(word) {
-            const wordGrid = document.getElementById('wordGrid');
-            const wordCard = document.createElement('div');
-            wordCard.className = 'word-card';
+        // Form submission with email functionality
+        document.getElementById('audiobook-form').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            // Evidenzia la lettera Aurek (A/a) nel termine
-            const highlightedWord = word.replace(/[Aa]/g, '<span class="highlighted">$&</span>');
-            wordCard.innerHTML = highlightedWord;
+            // Show loading spinner
+            const spinner = document.getElementById('loading-spinner');
+            spinner.style.display = 'inline-block';
             
-            wordGrid.appendChild(wordCard);
-        }
-        
-        // Funzione per resettare i terminali
-        function resetTerminals() {
-            updateStatus("Purgando terminali...");
-            document.getElementById('wordInput').value = '';
+            // Get form data
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const bookTitle = document.getElementById('book-title').value;
+            const author = document.getElementById('author').value;
+            const genre = document.getElementById('genre').value;
+            const voiceStyle = document.getElementById('voice-style').value;
+            const specialRequests = document.getElementById('special-requests').value;
             
-            const wordGrid = document.getElementById('wordGrid');
-            
-            // Effetto di eliminazione
-            const cards = wordGrid.querySelectorAll('.word-card');
-            let i = cards.length - 1;
-            
-            const interval = setInterval(() => {
-                if (i < 0) {
-                    clearInterval(interval);
-                    wordGrid.innerHTML = '';
-                    updateStatus("Terminali purgati");
-                    return;
-                }
+            // Prepare email content
+            const emailContent = `
+                Nuova Commissione di Audiolibro:
                 
-                cards[i].style.opacity = 0;
-                i--;
-            }, 50);
-        }
-        
-        function updateStatus(message) {
-            const statusElement = document.getElementById('statusIndicator');
-            statusElement.textContent = message;
-            statusElement.classList.add('blinking');
+                Nome: ${name}
+                Email: ${email}
+                Titolo del Libro: ${bookTitle}
+                Autore: ${author}
+                Genere: ${genre}
+                Stile di Voce: ${voiceStyle}
+                Richieste Speciali: ${specialRequests}
+            `;
             
+            // Send email via a backend service or email API
+            // For this example, we're using a direct method but in production
+            // you should use a secure backend endpoint
+            
+            // Simulate sending email (this would be replaced with actual email sending code)
             setTimeout(() => {
-                statusElement.classList.remove('blinking');
-            }, 2000);
-        }
-        
-        // Inizializza il sistema all'avvio
-        window.onload = function() {
-            updateStatus("Sistema inizializzato. In attesa di comandi...");
-            setTimeout(scanWords, 1500);
-        };
-    </script>
-</body>
-</html>
+                // In a real implementation, you would use a service like EmailJS:
+                // emailjs.send("service_id", "template_id", {
+                //     to_email: "dna67222@gmail.com",
+                //     from_name: name,
+                //     from_email: email,
+                //     subject: "Nuova Commissione di Audiolibro: " + bookTitle,
+                //     message: emailContent
+                // })
+                
+                // Hide loading spinner
+                spinner.style.display = 'none';
+                
+                // Show success notification
+                showNotification('Grazie per la tua commissione! Ti contatteremo presto con una proposta personalizzata.');
+                
+                // Reset form
+                this.reset();
+                
+                // In a real implementation, you would send the form data to your email address
+                console.log("Email would be sent to: dna67222@gmail.com");
+                console.log("Email content:", emailContent);
+                
+                // Alternative method using mailto link (not reliable but simple)
