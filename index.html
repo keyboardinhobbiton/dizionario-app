@@ -1,95 +1,295 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Modulo Pagamento PayPal</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-    }
-    .hidden {
-      display: none;
-    }
-    .visible {
-      display: block;
-    }
-    #paypal-button-container {
-      margin-top: 1rem;
-    }
-    #confirmation-message {
-      margin-top: 2rem;
-      color: green;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modulo di Contatto</title>
+    <style>
+        :root {
+            --main-bg: #000;
+            --accent-color: #FFE81F;
+            --text-color: #fff;
+            --dark-accent: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: var(--main-bg);
+            color: var(--text-color);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .commission-form, .payment-section {
+            background: rgba(51, 51, 51, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--dark-accent);
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: var(--accent-color);
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--dark-accent);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent-color);
+            color: var(--main-bg);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .submit-button:hover {
+            background-color: #ffd700;
+        }
+        
+        .success-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        #confirmation-section {
+            display: none;
+            background: rgba(51, 51, 51, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--dark-accent);
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        #confirmation-section h2 {
+            color: #4CAF50;
+        }
+        
+        .payment-description {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        #paypal-button-container {
+            margin-top: 20px;
+            min-height: 150px;
+        }
+        
+        #paypal-amount {
+            padding: 12px;
+            font-size: 1.1rem;
+            width: 100%;
+            max-width: 200px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--dark-accent);
+            border-radius: 5px;
+            color: var(--text-color);
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
+        
+        #paypal-amount-label {
+            display: block;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <!-- Sezione del modulo di commissione -->
+        <section class="commission-form">
+            <h2>Commissiona il Tuo Audiolibro</h2>
+            <!-- Form con autorisponditore configurato -->
+            <form id="commission-form" action="https://formsubmit.co/dna67222@gmail.com" method="POST">
+                <!-- Campi nascosti per configurare FormSubmit -->
+                <input type="hidden" name="_subject" value="Nuova Richiesta di Audiolibro">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_next" value="#confirmation">
+                
+                <!-- Configurazione dell'autorisponditore -->
+                <input type="hidden" name="_autoresponse" value="Grazie per la tua richiesta di audiolibro personalizzato! Abbiamo ricevuto la tua commissione e la stiamo valutando. Ti contatteremo al più presto con una proposta personalizzata. AudioSaga - Audiolibri Personalizzati">
+                <input type="hidden" name="_template" value="table">
+                
+                <div class="form-group">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">La tua Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="book-title">Titolo del Libro/Storia:</label>
+                    <input type="text" id="book-title" name="book-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">Autore (se applicabile):</label>
+                    <input type="text" id="author" name="author">
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genere:</label>
+                    <select id="genre" name="genre" required>
+                        <option value="">Seleziona un genere</option>
+                        <option value="fantasy">Fantasy</option>
+                        <option value="scifi">Fantascienza</option>
+                        <option value="adventure">Avventura</option>
+                        <option value="romance">Romantico</option>
+                        <option value="mystery">Mistero</option>
+                        <option value="horror">Horror</option>
+                        <option value="other">Altro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="voice-style">Stile di Voce Preferito:</label>
+                    <select id="voice-style" name="voice-style">
+                        <option value="">Seleziona uno stile</option>
+                        <option value="dramatic">Drammatico</option>
+                        <option value="neutral">Neutrale</option>
+                        <option value="epic">Epico</option>
+                        <option value="intimate">Intimo</option>
+                        <option value="multiple">Voci Multiple</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="special-requests">Dettagli Aggiuntivi e Richieste Speciali:</label>
+                    <textarea id="special-requests" name="special-requests"></textarea>
+                </div>
+                <button type="submit" class="submit-button">Invia Commissione</button>
+            </form>
+        </section>
 
-  <h2>Pagamento con PayPal</h2>
+        <!-- Sezione di conferma (mostrata dopo l'invio) -->
+        <section id="confirmation-section">
+            <h2>Grazie per la tua richiesta!</h2>
+            <p>Abbiamo ricevuto la tua commissione per l'audiolibro. Una email di conferma è stata inviata al tuo indirizzo email.</p>
+            <p>Ti contatteremo presto con una proposta personalizzata e informazioni sul prezzo.</p>
+            <button id="go-to-payment" class="submit-button">Vai alla sezione pagamenti</button>
+        </section>
 
-  <!-- Modulo di inserimento -->
-  <form id="payment-form">
-    <label for="paypal-amount">Inserisci l'importo (€):</label>
-    <input type="number" id="paypal-amount" name="amount" min="1" step="0.01" required />
-    <button type="submit">Procedi al pagamento</button>
-  </form>
+        <!-- Sezione per i pagamenti -->
+        <section id="payment-section" class="payment-section">
+            <h2>Pagamento</h2>
+            <p class="payment-description">Dopo aver ricevuto la nostra proposta e concordato il prezzo, puoi procedere con il pagamento utilizzando PayPal:</p>
+            
+            <!-- PayPal SDK -->
+            <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
+            
+            <!-- Campo per inserire l'importo -->
+            <label id="paypal-amount-label" for="paypal-amount">Importo (€):</label>
+            <input type="number" id="paypal-amount" min="1" step="0.01">
+            
+            <!-- Contenitore per il bottone -->
+            <div id="paypal-button-container"></div>
+            
+            <script>
+              // Attendi che l'utente inserisca un importo, poi genera il bottone
+              document.getElementById('paypal-amount').addEventListener('change', function () {
+                const amount = parseFloat(this.value);
+                if (amount > 0) {
+                  // Rimuove eventuali bottoni precedenti
+                  document.getElementById("paypal-button-container").innerHTML = "";
+                  paypal.Buttons({
+                    createOrder: function (data, actions) {
+                      return actions.order.create({
+                        purchase_units: [{
+                          amount: {
+                            value: amount.toFixed(2)
+                          }
+                        }]
+                      });
+                    },
+                    onApprove: function (data, actions) {
+                      return actions.order.capture().then(function (details) {
+                        alert("Pagamento completato da " + details.payer.name.given_name);
+                        // Qui potresti aggiungere redirect o salvataggio
+                      });
+                    }
+                  }).render('#paypal-button-container');
+                }
+              });
+            </script>
+        </section>
+    </div>
 
-  <!-- Contenitore per il bottone PayPal -->
-  <div id="paypal-button-container" class="hidden"></div>
+    <script>
+        // Gestione dell'invio del form e reindirizzamento
+        document.getElementById('commission-form').addEventListener('submit', function(e) {
+            // Non interrompe l'invio standard del form a FormSubmit
+            localStorage.setItem('formSubmitted', 'true');
+        });
 
-  <!-- Messaggio di conferma -->
-  <div id="confirmation-message" class="hidden">Pagamento completato con successo!</div>
-
-  <!-- SDK PayPal -->
-  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
-
-  <script>
-    const form = document.getElementById('payment-form');
-    const paypalContainer = document.getElementById('paypal-button-container');
-    const confirmation = document.getElementById('confirmation-message');
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const amount = parseFloat(document.getElementById('paypal-amount').value);
-      if (!amount || amount <= 0) {
-        alert("Inserisci un importo valido.");
-        return;
-      }
-
-      // Mostra il contenitore PayPal
-      paypalContainer.classList.remove('hidden');
-
-      // Rimuove eventuali bottoni precedenti
-      paypalContainer.innerHTML = "";
-
-      // Renderizza bottone PayPal
-      paypal.Buttons({
-        createOrder: function (data, actions) {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                value: amount.toFixed(2)
-              }
-            }]
-          });
-        },
-        onApprove: function (data, actions) {
-          return actions.order.capture().then(function (details) {
-            // Mostra messaggio di conferma
-            confirmation.classList.remove('hidden');
-            // Nasconde il modulo
-            form.classList.add('hidden');
-          });
-        },
-        onError: function (err) {
-          console.error("Errore PayPal:", err);
-          alert("Si è verificato un errore durante il pagamento.");
+        // Controllo se l'URL contiene l'ancora #confirmation
+        if (window.location.hash === '#confirmation' || localStorage.getItem('formSubmitted') === 'true') {
+            document.getElementById('commission-section').style.display = 'none';
+            document.getElementById('confirmation-section').style.display = 'block';
+            localStorage.removeItem('formSubmitted'); // Pulisce lo stato
         }
-      }).render('#paypal-button-container');
-    });
-  </script>
+
+        // Bottone per andare alla sezione pagamenti
+        document.getElementById('go-to-payment').addEventListener('click', function() {
+            document.getElementById('confirmation-section').style.display = 'none';
+            document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>
