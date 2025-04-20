@@ -234,8 +234,8 @@
 
     // Impostazioni per il grafico
     const width = 960;
-    const height = 800;
-    const margin = { top: 20, right: 180, bottom: 30, left: 180 };
+    const height = 1500; // Aumentata l'altezza per dare più spazio verticale
+    const margin = { top: 20, right: 200, bottom: 30, left: 200 };
 
     // Creazione dell'elemento SVG
     const svg = d3.select("#tree-container")
@@ -262,17 +262,29 @@
       "Usi Speciali": "#8ecae6"
     };
 
-    // Creazione dell'albero
+    // Funzione personalizzata per la separazione dei nodi
+    function customSeparation(a, b) {
+      // Se sono fratelli, dai loro più spazio
+      if (a.parent === b.parent) {
+        // Aumenta la separazione per i nodi foglia (che mostrano gli usi specifici)
+        if (a.depth === 2 && b.depth === 2) {
+          return 1.8; // Aumentato da 1.5 a 1.8 per maggiore distanziamento
+        }
+        return 1.2;
+      }
+      // Nodi non fratelli
+      return 1.4;
+    }
+
+    // Creazione dell'albero con separazione personalizzata
     const treeLayout = d3.tree()
-      .size([height - margin.top - margin.bottom, width - margin.left - margin.right - 100]);
+      .size([height - margin.top - margin.bottom, width - margin.left - margin.right - 100])
+      .separation(customSeparation);
 
     // Funzione per aggiornare l'albero
     function update(source) {
       // Creazione della gerarchia D3
       const root = d3.hierarchy(source);
-      
-      // Calcola la profondità totale per centrare l'albero
-      const totalNodes = root.descendants().length;
       
       // Assegnazione delle coordinate ai nodi
       treeLayout(root);
