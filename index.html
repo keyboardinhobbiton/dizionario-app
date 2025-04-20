@@ -1,105 +1,196 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Interactive Hierarchical Graph</title>
+  <title>Grafico Gerarchico degli Usi dell'Acqua Domestica</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
     }
-
     .node circle {
       fill: #fff;
-      stroke: steelblue;
+      stroke: #4682b4;
       stroke-width: 2px;
     }
-
     .node text {
       font: 12px sans-serif;
     }
-
     .link {
       fill: none;
       stroke: #ccc;
       stroke-width: 1.5px;
     }
+    h2 {
+      text-align: center;
+      color: #4682b4;
+    }
   </style>
 </head>
 <body>
-  <h2 style="text-align:center;">Data Rapresentation Thinking</h2>
+  <h2>100 Usi dell'Acqua a Uso Domiciliare</h2>
   <svg width="960" height="800"></svg>
-
   <script>
     const data = {
-      name: "flare",
+      name: "Usi dell'Acqua Domestica",
       children: [
         {
-          name: "analytics",
+          name: "Cucina",
           children: [
-            {
-              name: "cluster",
-              children: []
-            },
-            {
-              name: "graph",
-              children: [
-                { name: "BetweennessCentrality" },
-                { name: "LinkDistance" },
-                { name: "MaxFlowMinCut" },
-                { name: "ShortestPaths" },
-                { name: "SpanningTree" }
-              ]
-            },
-            { name: "optimization", children: [] },
-            { name: "Easing", children: [] }
+            { name: "Bere acqua potabile" },
+            { name: "Cuocere pasta e riso" },
+            { name: "Preparare zuppe e brodi" },
+            { name: "Bollire verdure" },
+            { name: "Lavare frutta e verdura" },
+            { name: "Lavare piatti e stoviglie" },
+            { name: "Bevande calde", children: [
+              { name: "Preparare caffè" },
+              { name: "Preparare tè e tisane" }
+            ]},
+            { name: "Preparazioni alimentari", children: [
+              { name: "Fare ghiaccio" },
+              { name: "Preparare impasti" },
+              { name: "Sbollentare alimenti" },
+              { name: "Scongelare alimenti" }
+            ]},
+            { name: "Pulizia cucina", children: [
+              { name: "Pulire piano cottura" },
+              { name: "Pulire elettrodomestici" },
+              { name: "Lavare il lavello" },
+              { name: "Alimentare lavastoviglie" }
+            ]}
           ]
         },
         {
-          name: "query",
+          name: "Bagno e Igiene",
           children: [
-            {
-              name: "methods",
-              children: [
-                { name: "add" },
-                { name: "and" },
-                { name: "avg" },
-                { name: "count" },
-                { name: "eq" },
-                { name: "gt" },
-                { name: "lt" },
-                { name: "max" },
-                { name: "min" },
-                { name: "sum" },
-              ]
-            }
+            { name: "Igiene corpo", children: [
+              { name: "Fare la doccia" },
+              { name: "Fare il bagno" },
+              { name: "Lavare mani e viso" },
+              { name: "Spazzolare i denti" },
+              { name: "Utilizzare il bidet" },
+              { name: "Radersi" }
+            ]},
+            { name: "Cura capelli", children: [
+              { name: "Lavare i capelli" },
+              { name: "Colorare i capelli" },
+              { name: "Sciacquare prodotti" }
+            ]}, 
+            { name: "Sanitari", children: [
+              { name: "Sciacquone WC" },
+              { name: "Contenitore risciacquo" }
+            ]},
+            { name: "Pulizia bagno", children: [
+              { name: "Pulire sanitari" },
+              { name: "Lavare accessori" }
+            ]}
           ]
         },
         {
-          name: "scale",
+          name: "Lavanderia e Pulizia",
           children: [
-            { name: "LinearScale" },
-            { name: "LogScale" },
-            { name: "TimeScale" }
+            { name: "Bucato", children: [
+              { name: "Lavatrice" },
+              { name: "Pretrattare macchie" },
+              { name: "Lavaggio a mano" },
+              { name: "Stirare con vapore" },
+              { name: "Lavare biancheria" }
+            ]},
+            { name: "Pulizie casa", children: [
+              { name: "Pulire pavimenti" },
+              { name: "Soluzioni detergenti" },
+              { name: "Pulire vetri e specchi" },
+              { name: "Pulire mobili" },
+              { name: "Lavare tappeti" },
+              { name: "Scopa a vapore" },
+              { name: "Sbrinare congelatore" }
+            ]}
           ]
         },
         {
-          name: "vis",
+          name: "Esterni e Giardinaggio",
           children: [
-            {
-              name: "events",
-              children: [
-                { name: "TooltipEvent" },
-                { name: "SelectionEvent" }
-              ]
-            },
-            {
-              name: "data",
-              children: []
-            },
-            {
-              name: "Visualization"
-            }
+            { name: "Piante", children: [
+              { name: "Piante da appartamento" },
+              { name: "Innaffiare giardino" },
+              { name: "Irrigare prato" },
+              { name: "Fertilizzanti liquidi" },
+              { name: "Vaporizzatori piante" },
+              { name: "Irrigazione automatica" }
+            ]},
+            { name: "Esterni", children: [
+              { name: "Lavare auto" },
+              { name: "Pulire vialetti" },
+              { name: "Piscine e idromassaggi" },
+              { name: "Fontane decorative" },
+              { name: "Pulire mobili esterni" },
+              { name: "Lavare attrezzature" }
+            ]},
+            { name: "Animali", children: [
+              { name: "Lavare animali domestici" },
+              { name: "Acquari domestici" },
+              { name: "Terrari e vivari" }
+            ]}
+          ]
+        },
+        {
+          name: "Salute e Benessere",
+          children: [
+            { name: "Terapie", children: [
+              { name: "Impacchi caldi/freddi" },
+              { name: "Umidificatori" },
+              { name: "Gargarismi" },
+              { name: "Idroterapia" },
+              { name: "Borse acqua calda" },
+              { name: "Soluzioni saline" },
+              { name: "Sciacqui oculari" }
+            ]},
+            { name: "Dispositivi medici", children: [
+              { name: "Pulire apparecchi acustici" },
+              { name: "Pulire apparecchi dentali" },
+              { name: "Dispositivi CPAP" },
+              { name: "Sterilizzare biberon" }
+            ]}
+          ]
+        },
+        {
+          name: "Hobby e Tempo Libero",
+          children: [
+            { name: "Arte", children: [
+              { name: "Pittura acquerello" },
+              { name: "Lavare pennelli" },
+              { name: "Mescolare colori" },
+              { name: "Materiali artigianato" }
+            ]},
+            { name: "Attività", children: [
+              { name: "Giardinaggio idroponico" },
+              { name: "Attività educative" },
+              { name: "Raffreddare bevande" },
+              { name: "Pulire attrezzature" }
+            ]}
+          ]
+        },
+        {
+          name: "Usi Tecnici",
+          children: [
+            { name: "Impianti", children: [
+              { name: "Caldaie riscaldamento" },
+              { name: "Sistemi raffreddamento" },
+              { name: "Riempire radiatori" },
+              { name: "Sistemi umidificazione" },
+              { name: "Sistemi antincendio" }
+            ]},
+            { name: "Manutenzione", children: [
+              { name: "Diluire prodotti chimici" },
+              { name: "Batterie auto" },
+              { name: "Testare perdite" },
+              { name: "Pulire filtri" },
+              { name: "Pulire dispositivi elettronici" },
+              { name: "Pulire occhiali e lenti" }
+            ]}
           ]
         }
       ]
@@ -107,36 +198,58 @@
 
     const svg = d3.select("svg"),
           width = +svg.attr("width"),
-          height = +svg.attr("height");
-
+          height = +svg.attr("height"),
+          margin = {top: 20, right: 120, bottom: 20, left: 120};
+    
+    // Use a radial layout for better use of space
+    const radius = Math.min(width, height) / 2 - 100;
+    
+    const tree = d3.tree()
+        .size([2 * Math.PI, radius])
+        .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth);
+    
+    // Center the tree
+    const g = svg.append("g")
+        .attr("transform", `translate(${width/2},${height/2})`);
+    
+    // Create hierarchy from data
     const root = d3.hierarchy(data);
-    const treeLayout = d3.tree().size([height, width - 200]);
-    treeLayout(root);
-
-    svg.selectAll('.link')
-      .data(root.links())
-      .enter()
-      .append('path')
-      .attr('class', 'link')
-      .attr('d', d3.linkHorizontal()
-                  .x(d => d.y)
-                  .y(d => d.x));
-
-    const node = svg.selectAll(".node")
-      .data(root.descendants())
-      .enter()
-      .append("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.y},${d.x})`);
-
+    tree(root);
+    
+    // Add links between nodes
+    const link = g.selectAll(".link")
+        .data(root.links())
+        .join("path")
+        .attr("class", "link")
+        .attr("d", d3.linkRadial()
+            .angle(d => d.x)
+            .radius(d => d.y));
+    
+    // Add nodes
+    const node = g.selectAll(".node")
+        .data(root.descendants())
+        .join("g")
+        .attr("class", "node")
+        .attr("transform", d => `
+          rotate(${d.x * 180 / Math.PI - 90})
+          translate(${d.y},0)
+        `);
+    
+    // Add circles to nodes
     node.append("circle")
-      .attr("r", 5);
-
+        .attr("r", 4)
+        .style("fill", d => d.children ? "#4682b4" : "#fff");
+    
+    // Add text labels
     node.append("text")
-      .attr("dy", 3)
-      .attr("x", d => d.children ? -10 : 10)
-      .style("text-anchor", d => d.children ? "end" : "start")
-      .text(d => d.data.name);
+        .attr("dy", "0.31em")
+        .attr("x", d => d.x < Math.PI ? 6 : -6)
+        .attr("text-anchor", d => d.x < Math.PI ? "start" : "end")
+        .attr("transform", d => d.x >= Math.PI ? "rotate(180)" : null)
+        .text(d => d.data.name)
+        .clone(true).lower()
+        .attr("stroke", "white")
+        .attr("stroke-width", 3);
   </script>
 </body>
 </html>
