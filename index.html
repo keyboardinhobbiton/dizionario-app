@@ -2,241 +2,382 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Grafico Gerarchico degli Usi dell'Acqua Domestica</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>100 Usi dell'Acqua Domestica</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f7fa;
       margin: 0;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #0077b6;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    h3 {
+      color: #555;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 30px;
+      font-weight: normal;
+    }
+    svg {
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 115, 178, 0.1);
     }
     .node circle {
-      fill: #fff;
-      stroke: steelblue;
       stroke-width: 2px;
+      transition: all 0.3s ease;
+    }
+    .node:hover circle {
+      r: 10;
+      filter: brightness(85%);
     }
     .node text {
-      font: 12px sans-serif;
+      font-size: 12px;
+      font-weight: 500;
     }
     .link {
       fill: none;
-      stroke: #ccc;
+      stroke: #94c6db;
       stroke-width: 1.5px;
+      stroke-opacity: 0.7;
     }
-    h2 {
-      text-align: center;
-      color: steelblue;
+    .tooltip {
+      position: absolute;
+      padding: 10px 14px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      border-radius: 4px;
+      font-size: 13px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      max-width: 300px;
+    }
+    .legend {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+      background-color: #e8f4f8;
+      padding: 10px 15px;
+      border-radius: 6px;
+    }
+    .category-label {
+      font-weight: bold;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h2>100 Usi dell'Acqua a Uso Domiciliare</h2>
-  <svg width="960" height="800"></svg>
+  <h1>100 Usi dell'Acqua a Uso Domiciliare</h1>
+  <h3>Visualizzazione per categorie e applicazioni</h3>
+  <div id="tree-container"></div>
+  <div class="legend">
+    Clicca sui nodi per espandere/comprimere le categorie. Passa il mouse sui nodi per vedere i dettagli.
+  </div>
+
   <script>
-    const data = {
+    // Dati degli usi dell'acqua organizzati gerarchicamente
+    const waterUsesData = {
       name: "Usi dell'Acqua Domestica",
       children: [
         {
           name: "Cucina",
           children: [
-            { name: "Bere acqua potabile" },
-            { name: "Cuocere pasta e riso" },
-            { name: "Preparare zuppe e brodi" },
-            { name: "Bollire verdure" },
-            { name: "Lavare frutta e verdura" },
-            { name: "Lavare piatti e stoviglie" },
-            { name: "Bevande calde", children: [
-              { name: "Preparare caffè" },
-              { name: "Preparare tè e tisane" }
-            ]},
-            { name: "Preparazioni alimentari", children: [
-              { name: "Fare ghiaccio" },
-              { name: "Preparare impasti" },
-              { name: "Sbollentare alimenti" },
-              { name: "Scongelare alimenti" }
-            ]},
-            { name: "Pulizia cucina", children: [
-              { name: "Pulire piano cottura" },
-              { name: "Pulire elettrodomestici" },
-              { name: "Lavare il lavello" },
-              { name: "Alimentare lavastoviglie" }
-            ]}
+            { name: "1. Bere acqua potabile" },
+            { name: "2. Cuocere la pasta" },
+            { name: "3. Cuocere il riso" },
+            { name: "4. Preparare zuppe e brodi" },
+            { name: "5. Bollire le verdure" },
+            { name: "6. Lavare frutta e verdura" },
+            { name: "7. Lavare piatti e stoviglie" },
+            { name: "8. Preparare il caffè" },
+            { name: "9. Preparare tè e tisane" },
+            { name: "10. Fare ghiaccio" },
+            { name: "11. Preparare impasti per dolci e pane" },
+            { name: "12. Sbollentare alimenti per la conservazione" },
+            { name: "13. Scongelare alimenti" },
+            { name: "14. Pulire il piano cottura" },
+            { name: "15. Riempire la macchina del ghiaccio" },
+            { name: "16. Pulire gli elettrodomestici" },
+            { name: "17. Lavare il lavello della cucina" },
+            { name: "18. Alimentare la lavastoviglie" }
           ]
         },
         {
-          name: "Bagno e Igiene",
+          name: "Bagno e Igiene Personale",
           children: [
-            { name: "Igiene corpo", children: [
-              { name: "Fare la doccia" },
-              { name: "Fare il bagno" },
-              { name: "Lavare mani e viso" },
-              { name: "Spazzolare i denti" },
-              { name: "Utilizzare il bidet" },
-              { name: "Radersi" }
-            ]},
-            { name: "Cura capelli", children: [
-              { name: "Lavare i capelli" },
-              { name: "Colorare i capelli" },
-              { name: "Sciacquare prodotti" }
-            ]}, 
-            { name: "Sanitari", children: [
-              { name: "Sciacquone WC" },
-              { name: "Contenitore risciacquo" }
-            ]},
-            { name: "Pulizia bagno", children: [
-              { name: "Pulire sanitari" },
-              { name: "Lavare accessori" }
-            ]}
+            { name: "19. Fare la doccia" },
+            { name: "20. Fare il bagno nella vasca" },
+            { name: "21. Lavare le mani" },
+            { name: "22. Lavare il viso" },
+            { name: "23. Spazzolare i denti" },
+            { name: "24. Utilizzare il bidet" },
+            { name: "25. Radersi" },
+            { name: "26. Colorare i capelli" },
+            { name: "27. Lavare i capelli" },
+            { name: "28. Umidificare asciugamani caldi per il viso" },
+            { name: "29. Sciacquare prodotti per capelli" },
+            { name: "30. Alimentare lo sciacquone del WC" },
+            { name: "31. Pulire il bagno" },
+            { name: "32. Riempire il contenitore del risciacquo per WC" },
+            { name: "33. Lavare spazzolini e accessori da bagno" },
+            { name: "34. Riempire vaschette per pediluvi" }
           ]
         },
         {
           name: "Lavanderia e Pulizia",
           children: [
-            { name: "Bucato", children: [
-              { name: "Lavatrice" },
-              { name: "Pretrattare macchie" },
-              { name: "Lavaggio a mano" },
-              { name: "Stirare con vapore" },
-              { name: "Lavare biancheria" }
-            ]},
-            { name: "Pulizie casa", children: [
-              { name: "Pulire pavimenti" },
-              { name: "Soluzioni detergenti" },
-              { name: "Pulire vetri e specchi" },
-              { name: "Pulire mobili" },
-              { name: "Lavare tappeti" },
-              { name: "Scopa a vapore" },
-              { name: "Sbrinare congelatore" }
-            ]}
+            { name: "35. Lavare i vestiti (lavatrice)" },
+            { name: "36. Pretrattare le macchie sui vestiti" },
+            { name: "37. Stirare con ferro a vapore" },
+            { name: "38. Lavare a mano indumenti delicati" },
+            { name: "39. Pulire i pavimenti" },
+            { name: "40. Preparare soluzioni detergenti" },
+            { name: "41. Pulire vetri e specchi" },
+            { name: "42. Pulire mobili e superfici" },
+            { name: "43. Lavare tappeti e tappezzeria" },
+            { name: "44. Sbrinare il congelatore" },
+            { name: "45. Riempire il serbatoio della scopa a vapore" },
+            { name: "46. Lavare le tende" },
+            { name: "47. Lavare lenzuola e biancheria da letto" },
+            { name: "48. Pulire i giocattoli dei bambini" }
           ]
         },
         {
-          name: "Esterni e Giardinaggio",
+          name: "Giardinaggio e Esterni",
           children: [
-            { name: "Piante", children: [
-              { name: "Piante da appartamento" },
-              { name: "Innaffiare giardino" },
-              { name: "Irrigare prato" },
-              { name: "Fertilizzanti liquidi" },
-              { name: "Vaporizzatori piante" },
-              { name: "Irrigazione automatica" }
-            ]},
-            { name: "Esterni", children: [
-              { name: "Lavare auto" },
-              { name: "Pulire vialetti" },
-              { name: "Piscine e idromassaggi" },
-              { name: "Fontane decorative" },
-              { name: "Pulire mobili esterni" },
-              { name: "Lavare attrezzature" }
-            ]},
-            { name: "Animali", children: [
-              { name: "Lavare animali domestici" },
-              { name: "Acquari domestici" },
-              { name: "Terrari e vivari" }
-            ]}
+            { name: "49. Innaffiare le piante da appartamento" },
+            { name: "50. Innaffiare il giardino" },
+            { name: "51. Irrigare il prato" },
+            { name: "52. Lavare l'auto" },
+            { name: "53. Pulire vialetti e marciapiedi" },
+            { name: "54. Riempire piscine e vasche idromassaggio" },
+            { name: "55. Riempire fontane decorative" },
+            { name: "56. Lavare animali domestici" },
+            { name: "57. Pulire attrezzi da giardinaggio" },
+            { name: "58. Preparare miscele di fertilizzanti liquidi" },
+            { name: "59. Riempire vaporizzatori per piante" },
+            { name: "60. Pulire mobili da giardino" },
+            { name: "61. Lavare biciclette o attrezzature sportive" },
+            { name: "62. Alimentare sistemi di irrigazione automatica" }
           ]
         },
         {
           name: "Salute e Benessere",
           children: [
-            { name: "Terapie", children: [
-              { name: "Impacchi caldi/freddi" },
-              { name: "Umidificatori" },
-              { name: "Gargarismi" },
-              { name: "Idroterapia" },
-              { name: "Borse acqua calda" },
-              { name: "Soluzioni saline" },
-              { name: "Sciacqui oculari" }
-            ]},
-            { name: "Dispositivi medici", children: [
-              { name: "Pulire apparecchi acustici" },
-              { name: "Pulire apparecchi dentali" },
-              { name: "Dispositivi CPAP" },
-              { name: "Sterilizzare biberon" }
-            ]}
+            { name: "63. Applicare impacchi caldi/freddi per terapia" },
+            { name: "64. Preparare umidificatori per ambiente" },
+            { name: "65. Gargarismi per mal di gola" },
+            { name: "66. Idroterapia domestica" },
+            { name: "67. Riempire borse dell'acqua calda" },
+            { name: "68. Preparare soluzioni saline per lavaggi nasali" },
+            { name: "69. Sciacqui oculari" },
+            { name: "70. Pulire apparecchi acustici" },
+            { name: "71. Pulire apparecchi ortodontici e dentiere" },
+            { name: "72. Alimentare dispositivi CPAP (con acqua distillata)" }
           ]
         },
         {
           name: "Hobby e Tempo Libero",
           children: [
-            { name: "Arte", children: [
-              { name: "Pittura acquerello" },
-              { name: "Lavare pennelli" },
-              { name: "Mescolare colori" },
-              { name: "Materiali artigianato" }
-            ]},
-            { name: "Attività", children: [
-              { name: "Giardinaggio idroponico" },
-              { name: "Attività educative" },
-              { name: "Raffreddare bevande" },
-              { name: "Pulire attrezzature" }
-            ]}
+            { name: "73. Pittura ad acquerello" },
+            { name: "74. Giardinaggio idroponico" },
+            { name: "75. Curare acquari domestici" },
+            { name: "76. Lavare pennelli per pittura" },
+            { name: "77. Mescolare colori per attività artistiche" },
+            { name: "78. Preparare materiali per artigianato" },
+            { name: "79. Curare terrari e vivari" },
+            { name: "80. Raffreddare bevande rapidamente" },
+            { name: "81. Pulire attrezzature sportive" },
+            { name: "82. Preparare attività educative con acqua per bambini" }
           ]
         },
         {
           name: "Usi Tecnici",
           children: [
-            { name: "Impianti", children: [
-              { name: "Caldaie riscaldamento" },
-              { name: "Sistemi raffreddamento" },
-              { name: "Riempire radiatori" },
-              { name: "Sistemi umidificazione" },
-              { name: "Sistemi antincendio" }
-            ]},
-            { name: "Manutenzione", children: [
-              { name: "Diluire prodotti chimici" },
-              { name: "Batterie auto" },
-              { name: "Testare perdite" },
-              { name: "Pulire filtri" },
-              { name: "Pulire dispositivi elettronici" },
-              { name: "Pulire occhiali e lenti" }
-            ]}
+            { name: "83. Alimentare caldaie per riscaldamento" },
+            { name: "84. Alimentare sistemi di raffreddamento" },
+            { name: "85. Riempire radiatori per riscaldamento" },
+            { name: "86. Alimentare sistemi di umidificazione" },
+            { name: "87. Diluire prodotti chimici domestici" },
+            { name: "88. Riempire batterie auto (acqua distillata)" },
+            { name: "89. Alimentare sistemi antincendio domestici" },
+            { name: "90. Testare perdite d'acqua negli impianti" },
+            { name: "91. Pulire filtri degli elettrodomestici" }
+          ]
+        },
+        {
+          name: "Usi Speciali",
+          children: [
+            { name: "92. Creare vapore per stirare tessuti delicati" },
+            { name: "93. Controllare livello dell'acqua nelle piante" },
+            { name: "94. Sciogliere prodotti di pulizia concentrati" },
+            { name: "95. Preparare ghiaccio aromatizzato" },
+            { name: "96. Pulire dispositivi elettronici (con tecniche appropriate)" },
+            { name: "97. Pulire occhiali e lenti" },
+            { name: "98. Pulire tastiere e telecomandi con panno umido" },
+            { name: "99. Riempire sterilizzatori per biberon" },
+            { name: "100. Preparare vaporizzatori per stiratura" }
           ]
         }
       ]
     };
 
-    const svg = d3.select("svg"),
-          width = +svg.attr("width"),
-          height = +svg.attr("height");
-    
-    // Create a horizontal tree layout
-    const root = d3.hierarchy(data);
-    const treeLayout = d3.tree().size([height - 100, width - 200]);
-    treeLayout(root);
-    
-    // Add a group element to contain all the elements
-    const g = svg.append("g")
-                .attr("transform", "translate(100, 20)");
-    
-    // Add the links between nodes
-    g.selectAll('.link')
-      .data(root.links())
-      .enter()
-      .append('path')
-      .attr('class', 'link')
-      .attr('d', d3.linkHorizontal()
-                  .x(d => d.y)
-                  .y(d => d.x));
-    
-    // Add the nodes
-    const node = g.selectAll(".node")
-      .data(root.descendants())
-      .enter()
+    // Impostazioni per il grafico
+    const width = 960;
+    const height = 800;
+    const margin = { top: 20, right: 180, bottom: 30, left: 180 };
+
+    // Creazione dell'elemento SVG
+    const svg = d3.select("#tree-container")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
       .append("g")
-      .attr("class", "node")
-      .attr("transform", d => `translate(${d.y},${d.x})`);
-    
-    // Add circles to the nodes
-    node.append("circle")
-      .attr("r", 5);
-    
-    // Add labels to the nodes
-    node.append("text")
-      .attr("dy", 3)
-      .attr("x", d => d.children ? -10 : 10)
-      .style("text-anchor", d => d.children ? "end" : "start")
-      .text(d => d.data.name);
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Creazione del tooltip
+    const tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip");
+
+    // Colori per ogni categoria
+    const categoryColors = {
+      "Cucina": "#0077b6",
+      "Bagno e Igiene Personale": "#00b4d8",
+      "Lavanderia e Pulizia": "#90e0ef",
+      "Giardinaggio e Esterni": "#2a9d8f",
+      "Salute e Benessere": "#e9c46a",
+      "Hobby e Tempo Libero": "#f4a261",
+      "Usi Tecnici": "#a5668b",
+      "Usi Speciali": "#8ecae6"
+    };
+
+    // Creazione dell'albero
+    const treeLayout = d3.tree()
+      .size([height - margin.top - margin.bottom, width - margin.left - margin.right - 100]);
+
+    // Funzione per aggiornare l'albero
+    function update(source) {
+      // Creazione della gerarchia D3
+      const root = d3.hierarchy(source);
+      
+      // Calcola la profondità totale per centrare l'albero
+      const totalNodes = root.descendants().length;
+      
+      // Assegnazione delle coordinate ai nodi
+      treeLayout(root);
+      
+      // Nodi
+      const nodes = root.descendants();
+      const links = root.links();
+
+      // Link tra i nodi (connessioni curve)
+      const link = svg.selectAll(".link")
+        .data(links, d => d.target.id || (d.target.id = Math.random()));
+
+      // Rimuovi vecchi link
+      link.exit().remove();
+
+      // Aggiungi nuovi link
+      link.enter()
+        .append("path")
+        .attr("class", "link")
+        .attr("d", d => {
+          return `M${d.source.y},${d.source.x}
+                  C${(d.source.y + d.target.y) / 2},${d.source.x}
+                   ${(d.source.y + d.target.y) / 2},${d.target.x}
+                   ${d.target.y},${d.target.x}`;
+        });
+
+      // Nodi dell'albero
+      const node = svg.selectAll(".node")
+        .data(nodes, d => d.id || (d.id = Math.random()));
+
+      // Rimuovi vecchi nodi
+      node.exit().remove();
+
+      // Aggiorna nodi esistenti
+      node.attr("transform", d => `translate(${d.y},${d.x})`);
+
+      // Aggiungi nuovi nodi
+      const nodeEnter = node.enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.y},${d.x})`)
+        .on("mouseover", (event, d) => {
+          tooltip.transition()
+            .duration(200)
+            .style("opacity", 0.9);
+          tooltip.html(`<strong>${d.data.name}</strong>`)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", () => {
+          tooltip.transition()
+            .duration(500)
+            .style("opacity", 0);
+        })
+        .on("click", (event, d) => {
+          // Espandi o contrai il nodo al click
+          if (d.children) {
+            d._children = d.children;
+            d.children = null;
+          } else {
+            d.children = d._children;
+            d._children = null;
+          }
+          update(waterUsesData);
+        });
+
+      // Determina il colore in base alla categoria o alla profondità
+      function getNodeColor(d) {
+        if (d.depth === 0) return "#0077b6";
+        if (d.depth === 1) return categoryColors[d.data.name] || "#999";
+        return categoryColors[d.parent.data.name] || "#999";
+      }
+
+      // Aggiunta dei cerchi ai nodi
+      nodeEnter.append("circle")
+        .attr("r", d => d.depth === 0 ? 9 : d.depth === 1 ? 7 : 5)
+        .style("fill", d => getNodeColor(d))
+        .style("stroke", d => d3.rgb(getNodeColor(d)).darker(0.5))
+        .style("fill-opacity", d => d._children ? 0.8 : 1);
+
+      // Aggiunta dei testi ai nodi
+      nodeEnter.append("text")
+        .attr("dy", ".31em")
+        .attr("x", d => d.children || d._children ? -12 : 12)
+        .attr("text-anchor", d => d.children || d._children ? "end" : "start")
+        .text(d => {
+          // Mostra nome completo per categorie e nome corto per gli elementi
+          if (d.depth <= 1) return d.data.name;
+          // Per gli elementi individuali, estrai solo il numero e la prima parte del nome
+          const fullName = d.data.name;
+          const parts = fullName.split(". ");
+          if (parts.length > 1) {
+            const number = parts[0];
+            const restOfName = parts[1].split(" ").slice(0, 3).join(" ");
+            return `${number}. ${restOfName}${restOfName.length < parts[1].length ? "..." : ""}`;
+          }
+          return fullName;
+        })
+        .style("fill", d => d.depth === 0 ? "#004c73" : d.depth === 1 ? "#333" : "#555")
+        .style("font-weight", d => d.depth <= 1 ? "bold" : "normal")
+        .style("font-size", d => d.depth === 0 ? "14px" : d.depth === 1 ? "12px" : "11px");
+    }
+
+    // Prima visualizzazione dell'albero
+    update(waterUsesData);
   </script>
 </body>
 </html>
