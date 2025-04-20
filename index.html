@@ -1,133 +1,142 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Network Diagram</title>
+  <title>Interactive Hierarchical Graph</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: #f8fafc;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    body {
+      font-family: sans-serif;
     }
-    svg {
-      display: block;
+
+    .node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 2px;
+    }
+
+    .node text {
+      font: 12px sans-serif;
+    }
+
+    .link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 1.5px;
     }
   </style>
 </head>
 <body>
-
-  <svg id="network" width="700" height="400"></svg>
+  <h2 style="text-align:center;">Piotr Paszek – Interactive Data Visualization</h2>
+  <svg width="960" height="800"></svg>
 
   <script>
-    const gods = [
-      "Chaos/Gaia/Mountains",
-      "Chaos/Gaia/Pontus",
-      "Chaos/Gaia/Uranus",
-      "Chaos/Eros",
-      "Chaos/Erebus",
-      "Chaos/Tartarus"
-    ];
-
-    function parseData(paths) {
-      const nodes = [];
-      const links = [];
-      const nodeMap = new Map();
-
-      paths.forEach(path => {
-        const parts = path.split("/");
-        for (let i = 0; i < parts.length; i++) {
-          const id = parts.slice(0, i + 1).join("/");
-          if (!nodeMap.has(id)) {
-            nodeMap.set(id, {
-              id,
-              name: parts[i],
-              level: i,
-              index: nodes.length
-            });
-            nodes.push(nodeMap.get(id));
-          }
-          if (i > 0) {
-            const sourceId = parts.slice(0, i).join("/");
-            links.push({
-              source: nodeMap.get(sourceId).index,
-              target: nodeMap.get(id).index
-            });
-          }
+    const data = {
+      name: "flare",
+      children: [
+        {
+          name: "analytics",
+          children: [
+            {
+              name: "cluster",
+              children: []
+            },
+            {
+              name: "graph",
+              children: [
+                { name: "BetweennessCentrality" },
+                { name: "LinkDistance" },
+                { name: "MaxFlowMinCut" },
+                { name: "ShortestPaths" },
+                { name: "SpanningTree" }
+              ]
+            },
+            { name: "optimization", children: [] },
+            { name: "Easing", children: [] }
+          ]
+        },
+        {
+          name: "query",
+          children: [
+            {
+              name: "methods",
+              children: [
+                { name: "add" },
+                { name: "and" },
+                { name: "avg" },
+                { name: "count" },
+                { name: "eq" },
+                { name: "gt" },
+                { name: "lt" },
+                { name: "max" },
+                { name: "min" },
+                { name: "sum" },
+              ]
+            }
+          ]
+        },
+        {
+          name: "scale",
+          children: [
+            { name: "LinearScale" },
+            { name: "LogScale" },
+            { name: "TimeScale" }
+          ]
+        },
+        {
+          name: "vis",
+          children: [
+            {
+              name: "events",
+              children: [
+                { name: "TooltipEvent" },
+                { name: "SelectionEvent" }
+              ]
+            },
+            {
+              name: "data",
+              children: []
+            },
+            {
+              name: "Visualization"
+            }
+          ]
         }
-      });
+      ]
+    };
 
-      return { nodes, links };
-    }
+    const svg = d3.select("svg"),
+          width = +svg.attr("width"),
+          height = +svg.attr("height");
 
-    function drawNetwork() {
-      const { nodes, links } = parseData(gods);
-      const svg = document.getElementById('network');
+    const root = d3.hierarchy(data);
+    const treeLayout = d3.tree().size([height, width - 200]);
+    treeLayout(root);
 
-      const levelGap = 180;
-      const nodeGap = 70;
+    svg.selectAll('.link')
+      .data(root.links())
+      .enter()
+      .append('path')
+      .attr('class', 'link')
+      .attr('d', d3.linkHorizontal()
+                  .x(d => d.y)
+                  .y(d => d.x));
 
-      const levelGroups = {};
-      nodes.forEach(node => {
-        if (!levelGroups[node.level]) levelGroups[node.level] = [];
-        levelGroups[node.level].push(node);
-      });
+    const node = svg.selectAll(".node")
+      .data(root.descendants())
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .attr("transform", d => `translate(${d.y},${d.x})`);
 
-      Object.keys(levelGroups).forEach(level => {
-        const nodesInLevel = levelGroups[level];
-        const levelHeight = nodesInLevel.length * nodeGap;
-        nodesInLevel.forEach((node, idx) => {
-          node.x = level * levelGap + 50;
-          node.y = 40 + idx * nodeGap - (levelHeight - nodeGap) / 2;
-        });
-      });
+    node.append("circle")
+      .attr("r", 5);
 
-      links.forEach(link => {
-        const source = nodes[link.source];
-        const target = nodes[link.target];
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        const d = `M${source.x + 100},${source.y + 15} C${source.x + 150},${source.y + 15} ${target.x - 50},${target.y + 15} ${target.x},${target.y + 15}`;
-        path.setAttribute("d", d);
-        path.setAttribute("stroke", "#3b82f6");
-        path.setAttribute("stroke-width", "2");
-        path.setAttribute("fill", "none");
-        svg.appendChild(path);
-      });
-
-      nodes.forEach(node => {
-        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-
-        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        rect.setAttribute("x", node.x);
-        rect.setAttribute("y", node.y);
-        rect.setAttribute("width", "100");
-        rect.setAttribute("height", "30");
-        rect.setAttribute("rx", "6");
-        rect.setAttribute("fill", "#3b82f6");
-        rect.setAttribute("stroke", "#2563eb");
-        rect.setAttribute("stroke-width", "2");
-        group.appendChild(rect);
-
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", node.x + 50);
-        text.setAttribute("y", node.y + 20);
-        text.setAttribute("text-anchor", "middle");
-        text.setAttribute("fill", "white");
-        text.setAttribute("font-weight", "bold");
-        text.textContent = node.name;
-        group.appendChild(text);
-
-        svg.appendChild(group);
-      });
-    }
-
-    drawNetwork();
+    node.append("text")
+      .attr("dy", 3)
+      .attr("x", d => d.children ? -10 : 10)
+      .style("text-anchor", d => d.children ? "end" : "start")
+      .text(d => d.data.name);
   </script>
-
 </body>
 </html>
