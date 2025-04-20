@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Dati degli dèi greci
 const gods = [
   "Chaos/Gaia/Mountains",
   "Chaos/Gaia/Pontus",
@@ -10,17 +9,15 @@ const gods = [
   "Chaos/Tartarus"
 ];
 
-// Parsing dei percorsi in una struttura gerarchica
 const parseData = (paths) => {
   const nodes = [];
   const links = [];
   const nodeMap = new Map();
-  
+
   paths.forEach(path => {
     const parts = path.split("/");
     for (let i = 0; i < parts.length; i++) {
       const id = parts.slice(0, i + 1).join("/");
-      
       if (!nodeMap.has(id)) {
         nodeMap.set(id, {
           id,
@@ -30,7 +27,6 @@ const parseData = (paths) => {
         });
         nodes.push(nodeMap.get(id));
       }
-      
       if (i > 0) {
         const sourceId = parts.slice(0, i).join("/");
         links.push({
@@ -40,48 +36,42 @@ const parseData = (paths) => {
       }
     }
   });
-  
+
   return { nodes, links };
 };
 
 const NetworkDiagram = () => {
   const { nodes, links } = parseData(gods);
-  
-  // Calcolo delle posizioni
-  const levelGap = 180;  // Distanza orizzontale tra i livelli
-  const nodeGap = 70;    // Distanza verticale tra i nodi dello stesso livello
-  
-  // Raggruppo i nodi per livello
+
+  const levelGap = 180;
+  const nodeGap = 70;
+
   const levelGroups = {};
   nodes.forEach(node => {
     if (!levelGroups[node.level]) levelGroups[node.level] = [];
     levelGroups[node.level].push(node);
   });
-  
-  // Assegna coordinate
+
   Object.keys(levelGroups).forEach(level => {
     const nodesInLevel = levelGroups[level];
     const levelHeight = nodesInLevel.length * nodeGap;
-    
     nodesInLevel.forEach((node, idx) => {
       node.x = level * levelGap + 50;
       node.y = 40 + idx * nodeGap - (levelHeight - nodeGap) / 2;
     });
   });
-  
+
   const width = 700;
   const height = 400;
-  
+
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <h2 className="text-xl font-bold mb-4">Rete Genealogica degli Dei Greci</h2>
       <svg width={width} height={height} className="border border-gray-300 rounded bg-slate-50">
-        {/* Collegamenti */}
         {links.map((link, i) => {
           const source = nodes[link.source];
           const target = nodes[link.target];
           const path = `M${source.x + 100},${source.y + 15} C${source.x + 150},${source.y + 15} ${target.x - 50},${target.y + 15} ${target.x},${target.y + 15}`;
-          
           return (
             <path 
               key={`link-${i}`} 
@@ -92,11 +82,8 @@ const NetworkDiagram = () => {
             />
           );
         })}
-        
-        {/* Nodi */}
         {nodes.map((node) => (
           <g key={`node-${node.id}`}>
-            {/* Rettangolo blu attorno al testo */}
             <rect 
               x={node.x} 
               y={node.y} 
@@ -107,8 +94,6 @@ const NetworkDiagram = () => {
               stroke="#2563eb"
               strokeWidth={2}
             />
-            
-            {/* Testo del nodo */}
             <text 
               x={node.x + 50} 
               y={node.y + 20} 
