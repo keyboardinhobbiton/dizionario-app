@@ -1,401 +1,128 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modulo di Contatto</title>
-    <style>
-        :root {
-            --main-bg: #000;
-            --accent-color: #FFE81F;
-            --text-color: #fff;
-            --dark-accent: #333;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        
-        body {
-            background-color: var(--main-bg);
-            color: var(--text-color);
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .commission-form, .payment-section, .contact-section {
-            background: rgba(51, 51, 51, 0.7);
-            padding: 40px;
-            border-radius: 10px;
-            border: 1px solid var(--dark-accent);
-            margin-bottom: 30px;
-        }
-        
-        h2 {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            color: var(--accent-color);
-            text-align: center;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-            color: var(--accent-color);
-        }
-        
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--dark-accent);
-            border-radius: 5px;
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-        
-        .form-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .submit-button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: var(--accent-color);
-            color: var(--main-bg);
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-        }
-        
-        .submit-button:hover {
-            background-color: #ffd700;
-        }
-        
-        .success-message {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-            text-align: center;
-            display: none;
-        }
-        
-        #confirmation-section {
-            display: none;
-            background: rgba(51, 51, 51, 0.7);
-            padding: 40px;
-            border-radius: 10px;
-            border: 1px solid var(--dark-accent);
-            text-align: center;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        #confirmation-section h2 {
-            color: #4CAF50;
-        }
-        
-        .payment-description {
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        
-        #paypal-button-container {
-            margin-top: 20px;
-            min-height: 150px;
-        }
-        
-        #paypal-amount {
-            padding: 12px;
-            font-size: 1.1rem;
-            width: 100%;
-            max-width: 200px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--dark-accent);
-            border-radius: 5px;
-            color: var(--text-color);
-            margin-top: 8px;
-            margin-bottom: 20px;
-        }
-        
-        #paypal-amount-label {
-            display: block;
-            color: var(--accent-color);
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-        }
-        
-        /* Stili per la sezione di contatto con messaggistica */
-        .contact-section {
-            text-align: center;
-        }
-        
-        .messaging-options {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-        }
-        
-        .messaging-option {
-            text-align: center;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            transition: all 0.3s;
-            width: 200px;
-        }
-        
-        .messaging-option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 232, 31, 0.2);
-        }
-        
-        .messaging-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-        
-        .telegram-icon {
-            color: #0088cc;
-        }
-        
-        .signal-icon {
-            color: #3a76f0;
-        }
-        
-        .messaging-option h3 {
-            margin-bottom: 10px;
-            color: var(--accent-color);
-        }
-        
-        .messaging-option p {
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-        
-        .messaging-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--accent-color);
-            color: var(--main-bg);
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .messaging-button:hover {
-            background-color: #ffd700;
-        }
-        
-        /* Link per icone */
-        .contact-section a {
-            color: var(--text-color);
-            text-decoration: none;
-        }
-    </style>
-    <!-- Icone Font Awesome per i social media -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <div class="container">
-        <!-- Sezione del modulo di commissione -->
-        <section class="commission-form" id="commission-section">
-            <h2>Commissiona il Tuo Audiolibro</h2>
-            <!-- Form con autorisponditore configurato -->
-            <form id="commission-form" action="https://formsubmit.co/dna67222@gmail.com" method="POST">
-                <!-- Campi nascosti per configurare FormSubmit -->
-                <input type="hidden" name="_subject" value="Nuova Richiesta di Audiolibro">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_next" value="#confirmation">
-                
-                <!-- Configurazione dell'autorisponditore -->
-                <input type="hidden" name="_autoresponse" value="Grazie per la tua richiesta di audiolibro personalizzato! Abbiamo ricevuto la tua commissione e la stiamo valutando. Ti contatteremo al più presto con una proposta personalizzata. AudioSaga - Audiolibri Personalizzati">
-                <input type="hidden" name="_template" value="table">
-                
-                <div class="form-group">
-                    <label for="name">Nome:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">La tua Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="book-title">Titolo del Libro/Storia:</label>
-                    <input type="text" id="book-title" name="book-title" required>
-                </div>
-                <div class="form-group">
-                    <label for="author">Autore (se applicabile):</label>
-                    <input type="text" id="author" name="author">
-                </div>
-                <div class="form-group">
-                    <label for="genre">Genere:</label>
-                    <select id="genre" name="genre" required>
-                        <option value="">Seleziona un genere</option>
-                        <option value="fantasy">Fantasy</option>
-                        <option value="scifi">Fantascienza</option>
-                        <option value="adventure">Avventura</option>
-                        <option value="romance">Romantico</option>
-                        <option value="mystery">Mistero</option>
-                        <option value="horror">Horror</option>
-                        <option value="other">Altro</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="voice-style">Stile di Voce Preferito:</label>
-                    <select id="voice-style" name="voice-style">
-                        <option value="">Seleziona uno stile</option>
-                        <option value="dramatic">Drammatico</option>
-                        <option value="neutral">Neutrale</option>
-                        <option value="epic">Epico</option>
-                        <option value="intimate">Intimo</option>
-                        <option value="multiple">Voci Multiple</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="special-requests">Dettagli Aggiuntivi e Richieste Speciali:</label>
-                    <textarea id="special-requests" name="special-requests"></textarea>
-                </div>
-                <button type="submit" class="submit-button">Invia Commissione</button>
-            </form>
-        </section>
+import React from 'react';
 
-        <!-- Sezione di conferma (mostrata dopo l'invio) -->
-        <section id="confirmation-section">
-            <h2>Grazie per la tua richiesta!</h2>
-            <p>Abbiamo ricevuto la tua commissione per l'audiolibro. Una email di conferma è stata inviata al tuo indirizzo email.</p>
-            <p>Ti contatteremo presto con una proposta personalizzata e informazioni sul prezzo.</p>
-            <button id="go-to-payment" class="submit-button">Vai alla sezione pagamenti</button>
-        </section>
+// Dati degli dèi greci
+const gods = [
+  "Chaos/Gaia/Mountains",
+  "Chaos/Gaia/Pontus",
+  "Chaos/Gaia/Uranus",
+  "Chaos/Eros",
+  "Chaos/Erebus",
+  "Chaos/Tartarus"
+];
 
-        <!-- Sezione per i pagamenti -->
-        <section id="payment-section" class="payment-section">
-            <h2>Pagamento</h2>
-            <p class="payment-description">Dopo aver ricevuto la nostra proposta e concordato il prezzo, puoi procedere con il pagamento utilizzando PayPal:</p>
-            
-            <!-- PayPal SDK -->
-            <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
-            
-            <!-- Campo per inserire l'importo -->
-            <label id="paypal-amount-label" for="paypal-amount">Importo (€):</label>
-            <input type="number" id="paypal-amount" min="1" step="0.01">
-            
-            <!-- Contenitore per il bottone -->
-            <div id="paypal-button-container"></div>
-            
-            <script>
-              // Attendi che l'utente inserisca un importo, poi genera il bottone
-              document.getElementById('paypal-amount').addEventListener('change', function () {
-                const amount = parseFloat(this.value);
-                if (amount > 0) {
-                  // Rimuove eventuali bottoni precedenti
-                  document.getElementById("paypal-button-container").innerHTML = "";
-                  paypal.Buttons({
-                    createOrder: function (data, actions) {
-                      return actions.order.create({
-                        purchase_units: [{
-                          amount: {
-                            value: amount.toFixed(2)
-                          }
-                        }]
-                      });
-                    },
-                    onApprove: function (data, actions) {
-                      return actions.order.capture().then(function (details) {
-                        alert("Pagamento completato da " + details.payer.name.given_name);
-                        // Qui potresti aggiungere redirect o salvataggio
-                      });
-                    }
-                  }).render('#paypal-button-container');
-                }
-              });
-            </script>
-        </section>
+// Parsing dei percorsi in una struttura gerarchica
+const parseData = (paths) => {
+  const nodes = [];
+  const links = [];
+  const nodeMap = new Map();
+  
+  paths.forEach(path => {
+    const parts = path.split("/");
+    for (let i = 0; i < parts.length; i++) {
+      const id = parts.slice(0, i + 1).join("/");
+      
+      if (!nodeMap.has(id)) {
+        nodeMap.set(id, {
+          id,
+          name: parts[i],
+          level: i,
+          index: nodes.length
+        });
+        nodes.push(nodeMap.get(id));
+      }
+      
+      if (i > 0) {
+        const sourceId = parts.slice(0, i).join("/");
+        links.push({
+          source: nodeMap.get(sourceId).index,
+          target: nodeMap.get(id).index
+        });
+      }
+    }
+  });
+  
+  return { nodes, links };
+};
 
-        <!-- NUOVA SEZIONE: Contatti e Messaggistica -->
-        <section id="contact-section" class="contact-section">
-            <h2>Contattaci Direttamente</h2>
-            <p>Preferisci comunicare in tempo reale? Contattaci tramite messaggio diretto su queste piattaforme:</p>
+const NetworkDiagram = () => {
+  const { nodes, links } = parseData(gods);
+  
+  // Calcolo delle posizioni
+  const levelGap = 180;  // Distanza orizzontale tra i livelli
+  const nodeGap = 70;    // Distanza verticale tra i nodi dello stesso livello
+  
+  // Raggruppo i nodi per livello
+  const levelGroups = {};
+  nodes.forEach(node => {
+    if (!levelGroups[node.level]) levelGroups[node.level] = [];
+    levelGroups[node.level].push(node);
+  });
+  
+  // Assegna coordinate
+  Object.keys(levelGroups).forEach(level => {
+    const nodesInLevel = levelGroups[level];
+    const levelHeight = nodesInLevel.length * nodeGap;
+    
+    nodesInLevel.forEach((node, idx) => {
+      node.x = level * levelGap + 50;
+      node.y = 40 + idx * nodeGap - (levelHeight - nodeGap) / 2;
+    });
+  });
+  
+  const width = 700;
+  const height = 400;
+  
+  return (
+    <div className="flex flex-col items-center justify-center w-full">
+      <h2 className="text-xl font-bold mb-4">Rete Genealogica degli Dei Greci</h2>
+      <svg width={width} height={height} className="border border-gray-300 rounded bg-slate-50">
+        {/* Collegamenti */}
+        {links.map((link, i) => {
+          const source = nodes[link.source];
+          const target = nodes[link.target];
+          const path = `M${source.x + 100},${source.y + 15} C${source.x + 150},${source.y + 15} ${target.x - 50},${target.y + 15} ${target.x},${target.y + 15}`;
+          
+          return (
+            <path 
+              key={`link-${i}`} 
+              d={path} 
+              stroke="#3b82f6" 
+              strokeWidth={2} 
+              fill="none" 
+            />
+          );
+        })}
+        
+        {/* Nodi */}
+        {nodes.map((node) => (
+          <g key={`node-${node.id}`}>
+            {/* Rettangolo blu attorno al testo */}
+            <rect 
+              x={node.x} 
+              y={node.y} 
+              width={100} 
+              height={30} 
+              rx={6} 
+              fill="#3b82f6" 
+              stroke="#2563eb"
+              strokeWidth={2}
+            />
             
-            <div class="messaging-options">
-                <!-- Opzione Telegram -->
-                <div class="messaging-option">
-                    <div class="messaging-icon">
-                        <i class="fab fa-telegram telegram-icon"></i>
-                    </div>
-                    <h3>Telegram</h3>
-                    <p>Comunicazione rapida e sicura tramite messaggistica istantanea</p>
-                    <a href="https://t.me/tuousername" class="messaging-button" target="_blank">Contatta su Telegram</a>
-                </div>
-                
-                <!-- Opzione Signal -->
-                <div class="messaging-option">
-                    <div class="messaging-icon">
-                        <i class="fab fa-signal signal-icon"></i>
-                    </div>
-                    <h3>Signal</h3>
-                    <p>Messaggistica criptata e sicura per la tua privacy</p>
-                    <a href="https://signal.me/#p/+xxYOURNUMBER" class="messaging-button" target="_blank">Contatta su Signal</a>
-                </div>
-            </div>
-            
-            <div style="margin-top: 30px;">
-                <p>Puoi anche comunicare con noi compilando il modulo di contatto sopra o via email all'indirizzo:</p>
-                <p style="margin-top: 10px;"><a href="mailto:dna67222@gmail.com" style="color: var(--accent-color);">dna67222@gmail.com</a></p>
-            </div>
-        </section>
+            {/* Testo del nodo */}
+            <text 
+              x={node.x + 50} 
+              y={node.y + 20} 
+              textAnchor="middle" 
+              fill="white" 
+              fontWeight="bold"
+            >
+              {node.name}
+            </text>
+          </g>
+        ))}
+      </svg>
     </div>
+  );
+};
 
-    <script>
-        // Gestione dell'invio del form e reindirizzamento
-        document.getElementById('commission-form').addEventListener('submit', function(e) {
-            // Non interrompe l'invio standard del form a FormSubmit
-            localStorage.setItem('formSubmitted', 'true');
-        });
-
-        // Controllo se l'URL contiene l'ancora #confirmation
-        if (window.location.hash === '#confirmation' || localStorage.getItem('formSubmitted') === 'true') {
-            document.getElementById('commission-section').style.display = 'none';
-            document.getElementById('confirmation-section').style.display = 'block';
-            localStorage.removeItem('formSubmitted'); // Pulisce lo stato
-        }
-
-        // Bottone per andare alla sezione pagamenti
-        document.getElementById('go-to-payment').addEventListener('click', function() {
-            document.getElementById('confirmation-section').style.display = 'none';
-            document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
-        });
-    </script>
-</body>
-</html>
+export default NetworkDiagram;
