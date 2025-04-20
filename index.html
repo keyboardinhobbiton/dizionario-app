@@ -2,39 +2,29 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Rete Genealogica degli Dei Greci</title>
+  <title>Network Diagram</title>
   <style>
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      background-color: #f3f4f6;
-      margin: 0;
-      padding: 20px;
-      font-family: sans-serif;
-    }
-    h2 {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
     }
     svg {
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background-color: #f8fafc;
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <h2>Rete Genealogica degli Dei Greci</h2>
-
   <svg id="network" width="700" height="400"></svg>
 
   <script>
-    // Dati degli dèi greci
     const gods = [
       "Chaos/Gaia/Mountains",
       "Chaos/Gaia/Pontus",
@@ -44,7 +34,6 @@
       "Chaos/Tartarus"
     ];
 
-    // Parsing dei percorsi
     function parseData(paths) {
       const nodes = [];
       const links = [];
@@ -76,7 +65,6 @@
       return { nodes, links };
     }
 
-    // Disegno del grafo
     function drawNetwork() {
       const { nodes, links } = parseData(gods);
       const svg = document.getElementById('network');
@@ -99,7 +87,6 @@
         });
       });
 
-      // Disegna collegamenti
       links.forEach(link => {
         const source = nodes[link.source];
         const target = nodes[link.target];
@@ -112,7 +99,6 @@
         svg.appendChild(path);
       });
 
-      // Disegna nodi
       nodes.forEach(node => {
         const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
